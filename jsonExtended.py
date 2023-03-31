@@ -1,36 +1,25 @@
 import json
 import os
 
-indentLevel = 4
+_indentLevel = 4
 
-def loadProperty(filePath: str, propertyPath: list) -> any:
-    with open(file = filePath, mode = "r") as fp:
-        content = fp.read()
-        rawData = json.load(fp = fp)
-    for name in propertyPath:
-        rawData = rawData[name]
+class JSONKeyError(Exception):
+    def __init__(self, wrongKey: str, currentKeyList: list, foundKeys: list):
+        Exception.__init__(self, f"key '{wrongKey}' not in {currentKeyList}; found keys: [{'->'.join(foundKeys)}]")
+
+def loadProperty(filePath: str, keys: list) -> any:
+    rawData = readJSONFile(filePath = filePath)
+    for i in range(len(keys)):
+        if (keys[i] not in rawData.keys()):
+            raise JSONKeyError(wrongKey = keys[i], currentKeyList = list(rawData.keys()), foundKeys = keys[:i])
+        rawData = rawData[keys[i]]
     return rawData
 
-def setProperty(filePath: str, propertyPath: list, value):
-    with open(file = filePath, mode = "r") as fp:
-        rawData = json.load(fp = fp)
-    relevantData = rawData
-    for name in propertyPath:
-        relevantData = relevantData[name]
-    relevantData = value
-    with open(file = filePath, mode = "w") as fp:
-        json.dump(obj = rawData, fp = fp, indent = indentLevel)
+def setProperty(filePath: str, keys: list, value):
+    raise NotImplementedError()
 
-
-def addProperty(filePath: str, propertyPath: list, value):
-    with open(file = filePath, mode = "r") as fp:
-        rawData = json.load(fp = fp)
-    relevantData = rawData
-    for name in propertyPath[:-1]:
-        relevantData = relevantData[name]
-    relevantData[propertyPath[-1]] = value
-    with open(file = filePath, mode = "w") as fp:
-        json.dump(obj = rawData, fp = fp, indent = indentLevel)
+def addProperty(filePath: str, keys: list, value):
+    raise NotImplementedError()
 
 def isFormatCorrect(filePath: str) -> bool:
     with open(file = filePath, mode = "r") as fp:
@@ -43,10 +32,10 @@ def isFormatCorrect(filePath: str) -> bool:
 def indentFile(filePath: str):
     writeJSONFile(filePath = filePath, data = readJSONFile(filePath = filePath))
 
-def readJSONFile(filePath: str) -> any:
+def readJSONFile(filePath: str) -> dict:
     with open(file = filePath, mode = "r") as fp:
         return json.load(fp = fp)
     
 def writeJSONFile(filePath: str, data: any):
     with open(file = filePath, mode = "w") as fp:
-        json.dump(obj = data, fp = fp, indent = indentLevel)
+        json.dump(obj = data, fp = fp, indent = _indentLevel)

@@ -1,4 +1,5 @@
 import json
+import os
 
 indentLevel = 4
 
@@ -30,3 +31,22 @@ def addProperty(filePath: str, propertyPath: list, value):
     relevantData[propertyPath[-1]] = value
     with open(file = filePath, mode = "w") as fp:
         json.dump(obj = rawData, fp = fp, indent = indentLevel)
+
+def isFormatCorrect(filePath: str) -> bool:
+    with open(file = filePath, mode = "r") as fp:
+        try:
+            json.load(fp = fp)
+        except json.JSONDecodeError:
+            return False
+        return True
+    
+def indentFile(filePath: str):
+    writeJSONFile(filePath = filePath, data = readJSONFile(filePath = filePath))
+
+def readJSONFile(filePath: str) -> any:
+    with open(file = filePath, mode = "r") as fp:
+        return json.load(fp = fp)
+    
+def writeJSONFile(filePath: str, data: any):
+    with open(file = filePath, mode = "w") as fp:
+        json.dump(obj = data, fp = fp, indent = indentLevel)

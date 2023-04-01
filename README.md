@@ -1,2 +1,2 @@
 # jsonExtended
-Additional methods for handling json in python.
+Additional methods for handling json files in python.

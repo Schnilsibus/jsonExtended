@@ -11,7 +11,7 @@ setuptools.setup(
     description = "additional methods for handling json files in python",
     long_description = long_description,
     url = "https://github.com/Schnilsibus/jsonExtended.git",
-    packages = setuptools.find_packages(where = "_core"),
+    package_dir = {"": "_core"},
     classifiers = [
     
     ]

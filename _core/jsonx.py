@@ -1,4 +1,5 @@
 import json
+import pathlib
 
 _indentLevel = 4
 
@@ -36,14 +37,14 @@ def _isObject(rawData: any) -> bool:
 def _containsKey(object: dict, key: str) -> bool:
     return key in object.keys()
 
-def getProperty(filePath: str, keys: list) -> any:
+def getProperty(filePath: pathlib.Path, keys: list) -> any:
     rawData = readJSONFile(filePath = filePath)
     property = _getValueOfKeys(rawData = rawData, keys = keys)
     if (_isObject(rawData = property)):
         raise NotAPropertyError(noPropertyObject = property)
     return property
 
-def setProperty(filePath: str, keys: list, value: any):
+def setProperty(filePath: pathlib.Path, keys: list, value: any):
     rawData = readJSONFile(filePath = filePath)
     parentObject = _getValueOfKeys(rawData = rawData, keys = keys[:-1])
     if (not _containsKey(object = parentObject, key = keys[-1])):
@@ -53,7 +54,7 @@ def setProperty(filePath: str, keys: list, value: any):
     parentObject[keys[-1]] = value
     writeJSONFile(filePath = filePath, data = rawData)
 
-def addProperty(filePath: str, keys: list, newKey: str, value: any):
+def addProperty(filePath: pathlib.Path, keys: list, newKey: str, value: any):
     rawData = readJSONFile(filePath = filePath)
     parentObject = _getValueOfKeys(rawData = rawData, keys = keys)
     if (_containsKey(object = parentObject, key = newKey)):
@@ -61,14 +62,14 @@ def addProperty(filePath: str, keys: list, newKey: str, value: any):
     parentObject[newKey] = value
     writeJSONFile(filePath = filePath, data = rawData)
 
-def getObject(filePath: str, keys: list) -> dict:
+def getObject(filePath: pathlib.Path, keys: list) -> dict:
     rawData = readJSONFile(filePath = filePath)
     object = _getValueOfKeys(rawData = rawData, keys = keys)
     if (_isProperty(rawData = object)):
         raise NotAObjectError(noObject = object)
     return object
 
-def setObject(filePath: str, keys: list, object: dict):
+def setObject(filePath: pathlib.Path, keys: list, object: dict):
     rawData = readJSONFile(filePath = filePath)
     parentObject = _getValueOfKeys(rawData = rawData, keys = keys[:-1])
     if (not _containsKey(object = parentObject, key = keys[-1])):
@@ -78,7 +79,7 @@ def setObject(filePath: str, keys: list, object: dict):
     parentObject[keys[-1]] = object
     writeJSONFile(filePath = filePath, data = rawData)
 
-def addObject(filePath: str, keys: list, newKey: str, object: dict):
+def addObject(filePath: pathlib.Path, keys: list, newKey: str, object: dict):
     rawData = readJSONFile(filePath = filePath)
     parentObject = _getValueOfKeys(rawData = rawData, keys = keys)
     if (_containsKey(object = parentObject, key = newKey)):
@@ -86,7 +87,7 @@ def addObject(filePath: str, keys: list, newKey: str, object: dict):
     parentObject[newKey] = object
     writeJSONFile(filePath = filePath, data = rawData)
 
-def isFormatCorrect(filePath: str) -> bool:
+def isFormatCorrect(filePath: pathlib.Path) -> bool:
     with open(file = filePath, mode = "r") as fp:
         try:
             json.load(fp = fp)
@@ -94,13 +95,13 @@ def isFormatCorrect(filePath: str) -> bool:
             return False
         return True
     
-def indentFile(filePath: str):
+def indentFile(filePath: pathlib.Path):
     writeJSONFile(filePath = filePath, data = readJSONFile(filePath = filePath))
 
-def readJSONFile(filePath: str) -> dict:
-    with open(file = filePath, mode = "r") as fp:
+def readJSONFile(filePath: pathlib.Path) -> dict:
+    with filePath.open(mode = "r") as fp:
         return json.load(fp = fp)
     
-def writeJSONFile(filePath: str, data: any):
-    with open(file = filePath, mode = "w") as fp:
+def writeJSONFile(filePath: pathlib.Path, data: any):
+    with filePath.open(mode = "w") as fp:
         json.dump(obj = data, fp = fp, indent = _indentLevel)

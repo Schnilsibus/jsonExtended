@@ -5,7 +5,7 @@ with open("README.md", "r") as fp:
 
 setuptools.setup(
     name = "jsonx",
-    version = "0.0.1",
+    version = "0.0.0",
     author = "Nils Urbach",
     author_email = "ndu01u@gmail.com",
     description = "additional methods for handling json files in python",

@@ -44,5 +44,6 @@ invalidJSONStr = """"thisastr": "IamAString",
 
 validJSONData = json.loads(s = validJSONStr)
 
-validPath = pathlib.Path.cwd() / pathlib.Path(r"tests\validJSONfile.json")
-invalidPath = pathlib.Path.cwd() / pathlib.Path(r"tests\invlaidJSONfile.json")
+pathToValidJSON = pathlib.Path.cwd() / pathlib.Path(r"tests\validJSONfile.json")
+pathToInvalidJSON = pathlib.Path.cwd() / pathlib.Path(r"tests\invlaidJSONfile.json")
+pathToNoJSON = pathlib.Path.cwd() / pathlib.Path(r"tests\idontexist.json")

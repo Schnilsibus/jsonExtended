@@ -1,49 +1,30 @@
-import pathlib
-import json
+from pathlib import Path
+from json import dumps
 
-validJSONStr = """{
+validJSONData = {
     "thisastr": "IamAString",
     "thisaint": 1234,
     "thisafloat": -56.78,
-    "thisabool": true,
-    "thisnull": null,
+    "thisabool": True,
+    "thisnull": None,
     "thisaarray": [
         "str",
         -23,
         4.5,
-        false,
-        null
+        False,
+        None
     ],
     "thisaObj": {
         "first": 123,
-        "second": null,
+        "second": None,
         "third": "nowIamBored"
     }
 }
-"""
+invalidJSONData = Path.cwd()
 
-invalidJSONStr = """"thisastr": "IamAString",
-    "thisaint": 1234,
-    "thisafloat": -56.78,
-    "thisabool": true,
-    "thisnull": null,
-    "thisaarray": [
-        "str",
-        -23,
-        4.5,
-        false,
-        null
-    ],
-    "thisaObj": {
-        "first": 123,
-        "second": null,
-        "third": "nowIamBored"
-    }
-}
-"""
+validJSONStr = dumps(validJSONData)
+invalidJSONStr = validJSONStr[1:]
 
-validJSONData = json.loads(s = validJSONStr)
-
-pathToValidJSON = pathlib.Path.cwd() / pathlib.Path(r"tests\validJSONfile.json")
-pathToInvalidJSON = pathlib.Path.cwd() / pathlib.Path(r"tests\invlaidJSONfile.json")
-pathToNoJSON = pathlib.Path.cwd() / pathlib.Path(r"tests\idontexist.json")
+pathToValidJSON = Path.cwd() / Path(r"tests\validJSONfile.json")
+pathToInvalidJSON = Path.cwd() / Path(r"tests\invlaidJSONfile.json")
+pathToNoJSON = Path.cwd() / Path(r"tests\idontexist.json")

@@ -1,60 +1,86 @@
 import sys
 import unittest
 from pathlib import Path
-import os
-sys.path.append("D:\Desktop\jsonExtended")
-import _core.jsonx as jsonx
+from json import JSONDecodeError, load
 from consts import *
+sys.path.append("D:\Desktop\jsonExtended")
+from _core.jsonx import *
 
-def globalSetUp():
-    with open(file = pathToValidJSON, mode = "w") as fp:
-            fp.write(validJSONStr)
-    with open(file = pathToInvalidJSON, mode = "w") as fp:
-            fp.write(invalidJSONStr)
+def globalSetUp(write: bool):
+    open(file = pathToValidJSON, mode = "x").close()
+    open(file = pathToInvalidJSON, mode = "x").close()
+    if (write):
+        with open(file = pathToValidJSON, mode = "w") as fp:
+                fp.write(validJSONStr)
+        with open(file = pathToInvalidJSON, mode = "w") as fp:
+                fp.write(invalidJSONStr)
 
 def globalTearDown():
     pathToValidJSON.unlink()
     pathToInvalidJSON.unlink()
+    if (pathToNoJSON.exists()):
+        pathToNoJSON.unlink()
 
 class TestSuite_readJSONFile(unittest.TestCase):
 
     def setUp(self):
-        globalSetUp()
-        with open(file = pathToValidJSON, mode = "w") as fp:
-            fp.write(validJSONStr)
-        with open(file = pathToInvalidJSON, mode = "w") as fp:
-            fp.write(invalidJSONStr)
+        globalSetUp(write = True)
 
     def tearDown(self):
         globalTearDown()
 
-    def test_throwsErrorIfPathInvalid(self):
+    def test_raisesErrorIfPathInvalid(self):
         try:
-            jsonx._readJSONFile(filePath = pathToNoJSON)
+            readJSONFile(filePath = pathToNoJSON)
             self.fail("this should have raised a FileNotFoundError")
         except FileNotFoundError as ex:
             pass
         except Exception as ex:
             self.fail("this should have raised a FileNotFoundError")
 
-    def test_throwsErrorIfJSONFileInvalid(self):
+    def test_raisesErrorIfJSONFileInvalid(self):
         try:
-            jsonx._readJSONFile(filePath = pathToInvalidJSON)
-            self.fail("this should have raised a JSONDecodeError")
-        except json.JSONDecodeError as ex:
+            readJSONFile(filePath = pathToInvalidJSON)
+            self.fail(msg = "this should have raised a JSONDecodeError")
+        except JSONDecodeError as ex:
             pass
         except Exception as ex:
-            self.fail("this should have raised a JSONDecodeError")
-
+            self.fail(msg = "this should have raised a JSONDecodeError")
 
     def test_readDataEqualToFileContents(self):
-        readData = jsonx._readJSONFile(filePath = pathToValidJSON)
-        self.assertTrue(expr = readData == validJSONData, msg = "decoded file contents are not correct")
-
-    
+        readData = readJSONFile(filePath = pathToValidJSON)
+        self.assertTrue(expr = readData == validJSONData, msg = "read and decoded file contents are not correct")
 
 class TestSuite_writeJSONFile(unittest.TestCase):
-    pass
+    
+    def setUp(self):
+        globalSetUp(write = False)
+
+    def tearDown(self):
+        globalTearDown()
+    
+    def test_raisesErrorIfPathInvalid(self):
+        try:
+            writeJSONFile(filePath = pathToNoJSON, data = validJSONData)
+            self.fail(msg = "this should have raised a FileNotFoundError")
+        except FileNotFoundError as ex:
+            pass
+        except Exception as ex:
+            self.fail(msg = "this should have raised a FileNotFoundError")
+
+    def test_raisesErrorIfDataNotJSONSerializable(self):
+        try:
+            writeJSONFile(filePath = pathToValidJSON, data = invalidJSONData)
+            self.fail(msg = "this should have raised a TypeError")
+        except TypeError as ex:
+            pass
+        except Exception as ex:
+            self.fail(msg = "this should have raised a TypeError")
+
+    def test_writtenDataEqualToInputData(self):
+        writeJSONFile(filePath = pathToValidJSON, data = validJSONData)
+        with open(file = pathToValidJSON, mode = "r") as fp:
+            self.assertTrue(expr = validJSONData == load(fp = fp), msg = "written and encoded file contents are not correct")
 
 class TestSuite_indentFile(unittest.TestCase):
     pass

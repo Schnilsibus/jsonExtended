@@ -1,6 +1,8 @@
+import sys
 from pathlib import Path
 from json import dumps
-
+sys.path.append("D:\Desktop\jsonExtended")
+from _core.jsonx import _indentLevel
 validJSONData = {
     "thisastr": "IamAString",
     "thisaint": 1234,
@@ -24,6 +26,7 @@ invalidJSONData = Path.cwd()
 
 validJSONStr = dumps(validJSONData)
 invalidJSONStr = validJSONStr[1:]
+indentedValidJSONStr = dumps(validJSONData, indent = _indentLevel)
 
 pathToValidJSON = Path.cwd() / Path(r"tests\validJSONfile.json")
 pathToInvalidJSON = Path.cwd() / Path(r"tests\invlaidJSONfile.json")

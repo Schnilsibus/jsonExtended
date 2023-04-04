@@ -1,5 +1,5 @@
 import sys
-import unittest
+from unittest import main, TestCase
 from pathlib import Path
 from json import JSONDecodeError, load
 from consts import *
@@ -21,7 +21,7 @@ def globalTearDown():
     if (pathToNoJSON.exists()):
         pathToNoJSON.unlink()
 
-class TestSuite_readJSONFile(unittest.TestCase):
+class TestSuite_readJSONFile(TestCase):
 
     def setUp(self):
         globalSetUp(write = True)
@@ -51,7 +51,7 @@ class TestSuite_readJSONFile(unittest.TestCase):
         readData = readJSONFile(filePath = pathToValidJSON)
         self.assertTrue(expr = readData == validJSONData, msg = "read and decoded file contents are not correct")
 
-class TestSuite_writeJSONFile(unittest.TestCase):
+class TestSuite_writeJSONFile(TestCase):
     
     def setUp(self):
         globalSetUp(write = False)
@@ -82,10 +82,28 @@ class TestSuite_writeJSONFile(unittest.TestCase):
         with open(file = pathToValidJSON, mode = "r") as fp:
             self.assertTrue(expr = validJSONData == load(fp = fp), msg = "written and encoded file contents are not correct")
 
-class TestSuite_indentFile(unittest.TestCase):
-    pass
+class TestSuite_indentFile(TestCase):
 
+    def setUp(self):
+        globalSetUp(write = True)
 
+    def tearDown(self):
+        globalTearDown()
+    
+    def test_raisesErrorIfPathInvalid(self):
+        try:
+            indentJSONFile(filePath = pathToNoJSON)
+            self.fail(msg = "this should have raised a FileNotFoundError")
+        except FileNotFoundError as ex:
+            pass
+        except Exception as ex:
+            self.fail(msg = "this should have raised a FileNotFoundError")
+
+    def test_indentsFileCorrectly(self):
+        indentJSONFile(filePath = pathToValidJSON)
+        with open(file = pathToValidJSON, mode = "r") as fp:
+            fileStr = fp.read()
+        self.assertTrue(expr = fileStr == indentedValidJSONStr, msg = "the file is not correctly indented")
 
 if (__name__ == "__main__"):
-    unittest.main()
+    main()

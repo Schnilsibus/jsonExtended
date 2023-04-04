@@ -77,7 +77,7 @@ def isFormatCorrect(filePath: Path) -> bool:
             return False
         return True
     
-def indentFile(filePath: Path):
+def indentJSONFile(filePath: Path):
     writeJSONFile(filePath = filePath, data = readJSONFile(filePath = filePath))
 
 def readJSONFile(filePath: Path) -> dict:

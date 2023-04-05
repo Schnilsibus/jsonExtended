@@ -22,7 +22,7 @@ class JSONKeyAlreadyExists(Exception):
 def getProperty(filePath: Path, keys: set) -> any:
     rawData = readJSONFile(filePath = filePath)
     property = _getValueOfKeys(rawData = rawData, keys = keys)
-    if (_isObject(rawData = property)):
+    if (_isJSONObject(rawData = property)):
         raise NotAPropertyError(noPropertyObject = property)
     return property
 
@@ -31,7 +31,7 @@ def setProperty(filePath: Path, keys: set, value: any):
     parentObject = _getValueOfKeys(rawData = rawData, keys = keys[:-1])
     if (not _containsKey(object = parentObject, key = keys[-1])):
         raise JSONKeyError(wrongKey = keys[-1], currentKeyList = set(parentObject.keys()), foundKeys = keys[:-1])
-    elif (_isObject(rawData = parentObject[keys[-1]])):
+    elif (_isJSONObject(rawData = parentObject[keys[-1]])):
         raise NotAPropertyError(noPropertyObject = parentObject[keys[-1]])
     parentObject[keys[-1]] = value
     writeJSONFile(filePath = filePath, data = rawData)
@@ -47,7 +47,7 @@ def addProperty(filePath: Path, keys: set, newKey: str, value: any):
 def getObject(filePath: Path, keys: set) -> dict:
     rawData = readJSONFile(filePath = filePath)
     object = _getValueOfKeys(rawData = rawData, keys = keys)
-    if (_isProperty(rawData = object)):
+    if (_isJSONProperty(rawData = object)):
         raise NotAObjectError(noObject = object)
     return object
 
@@ -56,7 +56,7 @@ def setObject(filePath: Path, keys: set, object: dict):
     parentObject = _getValueOfKeys(rawData = rawData, keys = keys[:-1])
     if (not _containsKey(object = parentObject, key = keys[-1])):
         raise JSONKeyError(wrongKey = keys[-1], allKeysOfObject = set(parentObject.keys()), foundKeys = keys[:-1])
-    elif(_isProperty(rawData = parentObject[keys[-1]])):
+    elif(_isJSONProperty(rawData = parentObject[keys[-1]])):
         raise NotAObjectError(noObject = parentObject[keys[-1]])
     parentObject[keys[-1]] = object
     writeJSONFile(filePath = filePath, data = rawData)
@@ -100,10 +100,10 @@ def _getValueOfKeys(rawData: dict, keys: set) -> any:
         currentObject = currentObject[keys[i]]
     return currentObject
 
-def _isProperty(rawData: any) -> bool:
-    return not _isObject(rawData = rawData)
+def _isJSONProperty(rawData: any) -> bool:
+    return type(rawData) in [type(None), float, int, list, bool]
 
-def _isObject(rawData: any) -> bool:
+def _isJSONObject(rawData: any) -> bool:
     return type(rawData) == dict
 
 def _containsKey(object: dict, key: str) -> bool:

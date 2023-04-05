@@ -31,3 +31,20 @@ indentedValidJSONStr = dumps(validJSONData, indent = _indentLevel)
 pathToValidJSON = Path.cwd() / Path(r"tests\validJSONfile.json")
 pathToInvalidJSON = Path.cwd() / Path(r"tests\invlaidJSONfile.json")
 pathToNoJSON = Path.cwd() / Path(r"tests\idontexist.json")
+
+jsonProperties = [
+        "astring",
+        "",
+        10,
+        -10,
+        0,
+        -0,
+        123.345,
+        -3.7,
+        0.0,
+        -0.0,
+        True,
+        False,
+        None,
+        ["1", 1, -1.2, None, True]
+    ]

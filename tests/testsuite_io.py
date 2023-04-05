@@ -1,6 +1,5 @@
 import sys
 from unittest import main, TestCase
-from pathlib import Path
 from json import JSONDecodeError, load
 from consts import *
 sys.path.append("D:\Desktop\jsonExtended")

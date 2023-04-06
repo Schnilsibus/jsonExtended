@@ -16,13 +16,26 @@ validJSONData = {
         False,
         None
     ],
-    "thisaObj": {
+    "thisaobj": {
         "first": 123,
         "second": None,
         "third": "nowIamBored"
     }
 }
 invalidJSONData = Path.cwd()
+
+simpleTypeKeys = [
+    "thisastr",
+    "thisaint",
+    "thisafloat",
+    "thisabool",
+    "thisnull"
+]
+arrayKey = "thisaarray"
+objectKey = "thisaobj"
+nonTopLevelKeys = ("thisaobj", "second")
+nonTopLevelValue = validJSONData["thisaobj"]["second"]
+invalidKeys = ("thisaobj", "thisnothere")
 
 validJSONStr = dumps(validJSONData)
 invalidJSONStr = validJSONStr[1:]
@@ -32,7 +45,7 @@ pathToValidJSON = Path.cwd() / Path(r"tests\validJSONfile.json")
 pathToInvalidJSON = Path.cwd() / Path(r"tests\invlaidJSONfile.json")
 pathToNoJSON = Path.cwd() / Path(r"tests\idontexist.json")
 
-jsonProperties = [
+mappedPythonTypes = [
         "astring",
         "",
         10,
@@ -45,6 +58,11 @@ jsonProperties = [
         -0.0,
         True,
         False,
-        None,
-        ["1", 1, -1.2, None, True]
+        None
     ]
+
+nonEmptyList = ["str", -3, 10.5, True, None]
+emptyList = []
+
+nonEmptyDict = {"astr": "str", "aint": -3, "afloat": 10.5, "abool": True, "aNull": None}
+emptyDict = {}

@@ -11,7 +11,7 @@ class NotAObjectError(Exception):
     def __init__(self, noObject: any):
         Exception.__init__(self, f"the json value {noObject} is not a json object")
 
-class JSONKeyError(Exception):
+class JSONKeyNotFoundError(Exception):
     def __init__(self, wrongKey: str, allKeysOfObject: list, foundKeys: list = None):
         Exception.__init__(self, f"key '{wrongKey}' not in {allKeysOfObject}; found keys: [{'->'.join(foundKeys)}]")
 
@@ -30,7 +30,7 @@ def setProperty(filePath: Path, keys: set, value: any):
     rawData = readJSONFile(filePath = filePath)
     parentObject = _getValueOfKeys(rawData = rawData, keys = keys[:-1])
     if (not _containsKey(object = parentObject, key = keys[-1])):
-        raise JSONKeyError(wrongKey = keys[-1], currentKeyList = set(parentObject.keys()), foundKeys = keys[:-1])
+        raise JSONKeyNotFoundError(wrongKey = keys[-1], allKeysOfObject = set(parentObject.keys()), foundKeys = keys[:-1])
     elif (_isJSONObject(rawData = parentObject[keys[-1]])):
         raise NotAPropertyError(noPropertyObject = parentObject[keys[-1]])
     parentObject[keys[-1]] = value
@@ -49,7 +49,7 @@ def containsProperty(filePath: Path, keys: set) -> bool:
     try:
         value = _getValueOfKeys(rawData = rawData, keys = keys)
         return _isJSONProperty(rawData = value)
-    except JSONKeyError as ex:
+    except JSONKeyNotFoundError as ex:
         return False
 
 def getObject(filePath: Path, keys: set) -> dict:
@@ -63,7 +63,7 @@ def setObject(filePath: Path, keys: set, object: dict):
     rawData = readJSONFile(filePath = filePath)
     parentObject = _getValueOfKeys(rawData = rawData, keys = keys[:-1])
     if (not _containsKey(object = parentObject, key = keys[-1])):
-        raise JSONKeyError(wrongKey = keys[-1], allKeysOfObject = set(parentObject.keys()), foundKeys = keys[:-1])
+        raise JSONKeyNotFoundError(wrongKey = keys[-1], allKeysOfObject = set(parentObject.keys()), foundKeys = keys[:-1])
     elif(_isJSONProperty(rawData = parentObject[keys[-1]])):
         raise NotAObjectError(noObject = parentObject[keys[-1]])
     parentObject[keys[-1]] = object
@@ -82,7 +82,7 @@ def containsObject(filePath: Path, keys: set) -> bool:
     try:
         value = _getValueOfKeys(rawData = rawData, keys = keys)
         return _isJSONObject(rawData = value)
-    except JSONKeyError as ex:
+    except JSONKeyNotFoundError as ex:
         return False
 
 def isFormatCorrect(filePath: Path) -> bool:
@@ -112,7 +112,7 @@ def _getValueOfKeys(rawData: dict, keys: set) -> any:
     currentObject = rawData
     for i in range(len(keys)):
         if (not _containsKey(object = currentObject, key = keys[i])):
-            raise JSONKeyError(wrongKey = keys[i], currentKeyList = set(rawData.keys()), foundKeys = keys[:i])
+            raise JSONKeyNotFoundError(wrongKey = keys[i], allKeysOfObject = set(rawData.keys()), foundKeys = keys[:i])
         currentObject = currentObject[keys[i]]
     return currentObject
 

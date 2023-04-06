@@ -122,6 +122,15 @@ class TestSuite_setProperty(SuperTestClass):
         except Exception as ex:
             self.fail(msg = "this should have raised a NotAPropertyError")
 
+    def test_raisesErrorIfNewValueNotAProperty(self):
+        try:
+            setProperty(filePath = pathToValidJSON, keys = (arrayKey,), value = nonEmptyDict)
+            self.fail(msg = "this should have raised a NotAPropertyError")
+        except NotAPropertyError as ex:
+            pass
+        except Exception as ex:
+            self.fail(msg = "this should have raised a NotAPropertyError")
+
     def test_raisesErrorIfAKeyDoesNotExist(self):
         try:
             setProperty(filePath = pathToValidJSON, keys = invalidKeys, value = None)
@@ -129,7 +138,7 @@ class TestSuite_setProperty(SuperTestClass):
         except JSONKeyNotFoundError as ex:
             pass
         except Exception as ex:
-            self.fail(msg = "this should have raised a JSONKeyNotFoundError")
+            self.fail(msg = "this should have raised a JSONKeyNotFoundError")   
     
     @parameterized.expand(list(simpleTypeKeysWithNewValues.keys()))
     def test_writesSimpleJSONPropertiesCorrectly(self, key: str):
@@ -165,11 +174,20 @@ class TestSuite_addProperty(SuperTestClass):
     def test_raisesErrorIfNotAProperty(self):
         try:
             addProperty(filePath = pathToValidJSON, keys = (), newKey = "", value = invalidJSONData)
-            self.fail(msg = "this should have raised a TypeError")
-        except TypeError as ex:
+            self.fail(msg = "this should have raised a NotAPropertyError")
+        except NotAPropertyError as ex:
             pass
         except Exception as ex:
-            self.fail(msg = "this should have raised a TypeError")
+            self.fail(msg = "this should have raised a NotAPropertyError")
+
+    def test_raisesErrorIfParentObjectIsNoJSONObject(self):
+        try:
+            addProperty(filePath = pathToValidJSON, keys = (arrayKey,), newKey = "", value = newArray)
+            self.fail(msg = "this should have raised a NotAObjectError")
+        except NotAObjectError as ex:
+            pass
+        except Exception as ex:
+            self.fail(msg = "this should have raised a NotAObjectError")
 
     def test_raisesErrorIfAKeyDoesNotExist(self):
         try:
@@ -307,6 +325,15 @@ class TestSuite_setObject(SuperTestClass):
         except Exception as ex:
             self.fail(msg = "this should have raised a NotAObjectError")
 
+    def test_raisesErrorIfNewValueNotAObject(self):
+        try:
+            setObject(filePath = pathToValidJSON, keys = (objectKey,), object = newArray)
+            self.fail(msg = "this should have raised a NotAObjectError")
+        except NotAObjectError as ex:
+            pass
+        except Exception as ex:
+            self.fail(msg = "this should have raised a NotAObjectError")
+
     def test_raisesErrorIfAKeyDoesNotExist(self):
         try:
             setObject(filePath = pathToValidJSON, keys = invalidKeys, object = None)
@@ -346,15 +373,24 @@ class TestSuite_addObject(SuperTestClass):
         except Exception as ex:
             self.fail(msg = "this should have raised a JSONDecodeError")
 
+    def test_raisesErrorIfParentObjectIsNoJSONObject(self):
+        try:
+            addObject(filePath = pathToValidJSON, keys = (arrayKey,), newKey = "", object = nonEmptyDict)
+            self.fail(msg = "this should have raised a NotAObjectError")
+        except NotAObjectError as ex:
+            pass
+        except Exception as ex:
+            self.fail(msg = "this should have raised a NotAObjectError")
+
     @parameterized.expand(mappedPythonTypes)
     def test_raisesErrorIfNotAObject(self, object: any):
         try:
             addObject(filePath = pathToValidJSON, keys = (), newKey = "", object = object)
-            self.fail(msg = "this should have raised a TypeError")
-        except TypeError as ex:
+            self.fail(msg = "this should have raised a NotAObjectError")
+        except NotAObjectError as ex:
             pass
         except Exception as ex:
-            self.fail(msg = "this should have raised a TypeError")
+            self.fail(msg = "this should have raised a NotAObjectError")
 
     def test_raisesErrorIfAKeyDoesNotExist(self):
         try:

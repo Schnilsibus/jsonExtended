@@ -7,6 +7,7 @@ class NotAPropertyError(Exception):
     """
     An Error that is be raised if a python object has a type that is not mapped to a JSON type
 
+    Can also be raised if contents of a JSON file should be a JSON property but are a JSON object.
     JSON types that are called properties are: array, string, number, boolean, null.
     The python types that are mapped to those are: tuple, str, int, float, bool, None.
     Every other python type is not considerd a JSON property.
@@ -16,7 +17,7 @@ class NotAPropertyError(Exception):
         """
         Parameters
         ----------
-        noPropertyObject: dict
+        noPropertyObject: any
             the python object whose type is not mapped to a JSON property
         """
 
@@ -26,6 +27,7 @@ class NotAObjectError(Exception):
     """
     An Error that is be raised if a python object has a type that is not mapped to a JSON object
 
+    Can also be raised if contents of a JSON file should be a JSON object but are a JSON property.
     JSON objects are the objects enclosed in curly braces in json files.
     The python type that is mapped to this is: dict.
     Every other python type is not considerd a JSON object.
@@ -81,13 +83,29 @@ class JSONKeyAlreadyExists(Exception):
 
 def getProperty(filePath: Path, keys: tuple) -> any:
     """
-    Returns a property of a JSON file
+    Returns a property in a JSON file
 
     Parameters
     ----------
     filePath: pathlib.Path
         the path to the json file
     keys: tuple
+        the orderd! keys in the JSON file that contain the desired property; the key of the property is the last element of the tuple
+
+    Returns
+    -------
+    the specified property
+
+    Raises
+    ------
+    FileNotFoundError
+        if filePath doesn't point to a file
+    json.JSONDecodeError
+        if the file that filePath points to cannot be decoded by the json package ergo dosn't contain valid JSON
+    JSONKeyNotFoundError
+        if keys contains a key that cannot be found (in the JSON object that the keys before the not-found-key point to)
+    NotAPropertyError
+        if keys point to a JSON object (not a JSON property)
     """
     
     rawData = readJSONFile(filePath = filePath)
@@ -97,26 +115,112 @@ def getProperty(filePath: Path, keys: tuple) -> any:
     return property
 
 def setProperty(filePath: Path, keys: tuple, value: any):
+    """
+    Sets a property in a JSON file to a value
+
+    Parameters
+    ----------
+    filePath: pathlib.Path
+        the path to the json file
+    keys: tuple
+        the orderd! keys in the JSON file that contain the desired property; the key of the property is the last element of the tuple
+    value: any (must be a python type that is mapped to JSON property)
+        the new value of the property
+
+    Returns
+    -------
+    None
+
+    Raises
+    ------
+    FileNotFoundError
+        if filePath doesn't point to a file
+    json.JSONDecodeError
+        if the file that filePath points to cannot be decoded by the json package ergo dosn't contain valid JSON
+    JSONKeyNotFoundError
+        if keys contains a key that cannot be found (in the JSON object that the keys before the not-found-key point to)
+    NotAPropertyError
+        - if keys point to a JSON object (not a JSON property)
+        - if type(value) is not mapped to a JSON property
+    """
+    
     rawData = readJSONFile(filePath = filePath)
     parentObject = _getValueOfKeys(rawData = rawData, keys = keys[:-1])
     if (not _containsKey(object = parentObject, key = keys[-1])):
         raise JSONKeyNotFoundError(wrongKey = keys[-1], allKeysOfObject = tuple(parentObject.keys()), foundKeys = keys[:-1])
     elif (_isJSONObject(rawData = parentObject[keys[-1]])):
         raise NotAPropertyError(noPropertyObject = parentObject[keys[-1]])
+    elif (not _isJSONProperty(rawData = value)):
+        raise NotAPropertyError(noPropertyObject = value)
     parentObject[keys[-1]] = value
     writeJSONFile(filePath = filePath, data = rawData)
 
 def addProperty(filePath: Path, keys: tuple, newKey: str, value: any):
+    """
+    adds a JSON property to a JSON file
+
+    Parameters
+    ----------
+    filePath: pathlib.Path
+        the path to the json file
+    keys: tuple
+        the orderd! keys in the JSON file point to the JSON object that should contain the property
+    newKey: str
+        the new key of the proerty
+    value: any (must be a python type that is mapped to JSON property)
+        the new value of the property
+
+    Returns
+    -------
+    None
+
+    Raises
+    ------
+    FileNotFoundError
+        if filePath doesn't point to a file
+    json.JSONDecodeError
+        if the file that filePath points to cannot be decoded by the json package ergo dosn't contain valid JSON
+    JSONKeyNotFoundError
+        if keys contains a key that cannot be found (in the JSON object that the keys before the not-found-key point to)
+    NotAPropertyError
+        if the type(value) is not mapped to a JSON property
+    """
+    
     rawData = readJSONFile(filePath = filePath)
     parentObject = _getValueOfKeys(rawData = rawData, keys = keys)
-    if (_containsKey(object = parentObject, key = newKey)):
+    if (not _isJSONObject(rawData = parentObject)):
+        raise NotAObjectError(noObject = parentObject)
+    elif (_containsKey(object = parentObject, key = newKey)):
         raise JSONKeyAlreadyExists(doubleKey = newKey, allKeysOfObject = tuple(parentObject.keys()), foundKeys = keys)
     elif (not _isJSONProperty(rawData = value)):
-        raise TypeError(f"'{type(value)}' is not a type that can be mapped to a json property")
+        raise NotAPropertyError(noPropertyObject = value, )
     parentObject[newKey] = value
     writeJSONFile(filePath = filePath, data = rawData)
 
 def containsProperty(filePath: Path, keys: tuple) -> bool:
+    """
+    Returns if a JSON file contains a specified porperty
+
+    Parameters
+    ----------
+    filePath: pathlib.Path
+        the path to the json file
+    keys: tuple
+        the orderd! keys in the JSON file that contain the desired property; the key of the property is the last element of the tuple
+    
+    Returns
+    -------
+    True if the JSON file contains the specified property
+    False else
+
+    Raises
+    ------
+    FileNotFoundError
+        if filePath doesn't point to a file
+    json.JSONDecodeError
+        if the file that filePath points to cannot be decoded by the json package ergo dosn't contain valid JSON
+    """
+    
     rawData = readJSONFile(filePath = filePath)
     try:
         value = _getValueOfKeys(rawData = rawData, keys = keys)
@@ -125,6 +229,20 @@ def containsProperty(filePath: Path, keys: tuple) -> bool:
         return False
 
 def getObject(filePath: Path, keys: tuple) -> dict:
+    """
+    Summary
+
+    Parameters
+    ----------
+
+    Returns
+    -------
+
+    Raises
+    ------
+    
+    """
+    
     rawData = readJSONFile(filePath = filePath)
     object = _getValueOfKeys(rawData = rawData, keys = keys)
     if (_isJSONProperty(rawData = object)):
@@ -132,26 +250,72 @@ def getObject(filePath: Path, keys: tuple) -> dict:
     return object
 
 def setObject(filePath: Path, keys: tuple, object: dict):
+    """
+    Summary
+
+    Parameters
+    ----------
+
+    Returns
+    -------
+
+    Raises
+    ------
+    
+    """
+    
     rawData = readJSONFile(filePath = filePath)
     parentObject = _getValueOfKeys(rawData = rawData, keys = keys[:-1])
     if (not _containsKey(object = parentObject, key = keys[-1])):
         raise JSONKeyNotFoundError(wrongKey = keys[-1], allKeysOfObject = tuple(parentObject.keys()), foundKeys = keys[:-1])
-    elif(_isJSONProperty(rawData = parentObject[keys[-1]])):
+    elif (_isJSONProperty(rawData = parentObject[keys[-1]])):
         raise NotAObjectError(noObject = parentObject[keys[-1]])
+    elif (not _isJSONObject(rawData = object)):
+        raise NotAObjectError(noObject = object)
     parentObject[keys[-1]] = object
     writeJSONFile(filePath = filePath, data = rawData)
 
 def addObject(filePath: Path, keys: tuple, newKey: str, object: dict):
+    """
+    Summary
+
+    Parameters
+    ----------
+
+    Returns
+    -------
+
+    Raises
+    ------
+    
+    """
+    
     rawData = readJSONFile(filePath = filePath)
     parentObject = _getValueOfKeys(rawData = rawData, keys = keys)
-    if (_containsKey(object = parentObject, key = newKey)):
+    if (not _isJSONObject(rawData = parentObject)):
+        raise NotAObjectError(noObject = parentObject)
+    elif (_containsKey(object = parentObject, key = newKey)):
         raise JSONKeyAlreadyExists(doubleKey = newKey, allKeysOfObject = tuple(parentObject.keys()), foundKeys = keys)
     elif(not _isJSONObject(rawData = object)):
-        raise TypeError(f"'{type(object)}' is not a type that can be mapped to a json property")
+        raise NotAObjectError(noObject = object)
     parentObject[newKey] = object
     writeJSONFile(filePath = filePath, data = rawData)
 
 def containsObject(filePath: Path, keys: tuple) -> bool:
+    """
+    Summary
+
+    Parameters
+    ----------
+
+    Returns
+    -------
+
+    Raises
+    ------
+    
+    """
+    
     rawData = readJSONFile(filePath = filePath)
     try:
         value = _getValueOfKeys(rawData = rawData, keys = keys)
@@ -160,6 +324,20 @@ def containsObject(filePath: Path, keys: tuple) -> bool:
         return False
 
 def isFormatCorrect(filePath: Path) -> bool:
+    """
+    Summary
+
+    Parameters
+    ----------
+
+    Returns
+    -------
+
+    Raises
+    ------
+    
+    """
+    
     with open(file = filePath, mode = "r") as fp:
         try:
             readJSONFile(filePath = filePath)
@@ -168,15 +346,57 @@ def isFormatCorrect(filePath: Path) -> bool:
         return True
     
 def indentJSONFile(filePath: Path):
+    """
+    Summary
+
+    Parameters
+    ----------
+
+    Returns
+    -------
+
+    Raises
+    ------
+    
+    """
+    
     writeJSONFile(filePath = filePath, data = readJSONFile(filePath = filePath))
 
 def readJSONFile(filePath: Path) -> dict:
+    """
+    Summary
+
+    Parameters
+    ----------
+
+    Returns
+    -------
+
+    Raises
+    ------
+    
+    """
+    
     if (not filePath.exists()):
         raise FileNotFoundError(f"the JSON file {filePath} doesn't exist")
     with filePath.open(mode = "r") as fp:
         return load(fp = fp)
     
 def writeJSONFile(filePath: Path, data: dict):
+    """
+    Summary
+
+    Parameters
+    ----------
+
+    Returns
+    -------
+
+    Raises
+    ------
+    
+    """
+    
     if (not filePath.exists()):
         raise FileNotFoundError(f"the JSON file {filePath} doesn't exist")
     with filePath.open(mode = "w") as fp:

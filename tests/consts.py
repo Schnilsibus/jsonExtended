@@ -37,6 +37,16 @@ nonTopLevelKeys = ("thisaobj", "second")
 nonTopLevelValue = validJSONData["thisaobj"]["second"]
 invalidKeys = ("thisaobj", "thisnothere")
 
+newSimpleObj = [
+     "newString",
+     100,
+     -45.78,
+     False,
+     None
+]
+simpleTypeKeysWithNewValues = {simpleTypeKeys[i]: newSimpleObj[i] for i in range(len(simpleTypeKeys))}
+newArray = newSimpleObj
+
 validJSONStr = dumps(validJSONData)
 invalidJSONStr = validJSONStr[1:]
 indentedValidJSONStr = dumps(validJSONData, indent = _indentLevel)
@@ -66,3 +76,18 @@ emptyList = []
 
 nonEmptyDict = {"astr": "str", "aint": -3, "afloat": 10.5, "abool": True, "aNull": None}
 emptyDict = {}
+
+def globalSetUp(write: bool):
+    open(file = pathToValidJSON, mode = "x").close()
+    open(file = pathToInvalidJSON, mode = "x").close()
+    if (write):
+        with open(file = pathToValidJSON, mode = "w") as fp:
+                fp.write(validJSONStr)
+        with open(file = pathToInvalidJSON, mode = "w") as fp:
+                fp.write(invalidJSONStr)
+
+def globalTearDown():
+    pathToValidJSON.unlink()
+    pathToInvalidJSON.unlink()
+    if (pathToNoJSON.exists()):
+        pathToNoJSON.unlink()

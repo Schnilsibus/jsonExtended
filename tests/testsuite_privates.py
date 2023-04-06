@@ -3,7 +3,7 @@ from unittest import main, TestCase
 from parameterized import parameterized
 from consts import *
 sys.path.append("D:\Desktop\jsonExtended")
-from _core.jsonx import _containsKey, _getValueOfKeys, _isJSONObject, _isJSONProperty, JSONKeyError
+from _core.jsonx import _containsKey, _getValueOfKeys, _isJSONObject, _isJSONProperty, JSONKeyNotFoundError
 
 class TestSuite__isJSONProperty(TestCase):
 
@@ -80,11 +80,11 @@ class TestSuite__getValueOfKeys(TestCase):
     def tets_raisesErrorIfAKeyDoesNotExist(self):
         try:
             _getValueOfKeys(rawData = validJSONData, keys = invalidKeys)
-            self.fail(msg = "this should have raised a JSONKeyError")
-        except JSONKeyError as ex:
+            self.fail(msg = "this should have raised a JSONKeyNotFoundError")
+        except JSONKeyNotFoundError as ex:
             pass
         except Exception as ex:
-            self.fail(msg = "this should have raised a JSONKeyError")
+            self.fail(msg = "this should have raised a JSONKeyNotFoundError")
 
 if (__name__ == "__main__"):
     main()

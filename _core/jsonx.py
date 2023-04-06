@@ -101,7 +101,7 @@ def _getValueOfKeys(rawData: dict, keys: set) -> any:
     return currentObject
 
 def _isJSONProperty(rawData: any) -> bool:
-    return type(rawData) in [type(None), float, int, list, bool]
+    return type(rawData) in [type(None), float, int, list, bool, str]
 
 def _isJSONObject(rawData: any) -> bool:
     return type(rawData) == dict

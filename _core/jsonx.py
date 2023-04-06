@@ -44,6 +44,14 @@ def addProperty(filePath: Path, keys: set, newKey: str, value: any):
     parentObject[newKey] = value
     writeJSONFile(filePath = filePath, data = rawData)
 
+def containsProperty(filePath: Path, keys: set) -> bool:
+    rawData = readJSONFile(filePath = filePath)
+    try:
+        value = _getValueOfKeys(rawData = rawData, keys = keys)
+        return _isJSONProperty(rawData = value)
+    except JSONKeyError as ex:
+        return False
+
 def getObject(filePath: Path, keys: set) -> dict:
     rawData = readJSONFile(filePath = filePath)
     object = _getValueOfKeys(rawData = rawData, keys = keys)
@@ -68,6 +76,14 @@ def addObject(filePath: Path, keys: set, newKey: str, object: dict):
         raise JSONKeyAlreadyExists(doubleKey = newKey, allKeysOfObject = set(parentObject.keys()), foundKeys = keys)
     parentObject[newKey] = object
     writeJSONFile(filePath = filePath, data = rawData)
+
+def containsObject(filePath: Path, keys: set) -> bool:
+    rawData = readJSONFile(filePath = filePath)
+    try:
+        value = _getValueOfKeys(rawData = rawData, keys = keys)
+        return _isJSONObject(rawData = value)
+    except JSONKeyError as ex:
+        return False
 
 def isFormatCorrect(filePath: Path) -> bool:
     with open(file = filePath, mode = "r") as fp:

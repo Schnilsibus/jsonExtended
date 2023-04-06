@@ -41,6 +41,8 @@ def addProperty(filePath: Path, keys: set, newKey: str, value: any):
     parentObject = _getValueOfKeys(rawData = rawData, keys = keys)
     if (_containsKey(object = parentObject, key = newKey)):
         raise JSONKeyAlreadyExists(doubleKey = newKey, allKeysOfObject = set(parentObject.keys()), foundKeys = keys)
+    elif (not _isJSONProperty(rawData = value)):
+        raise TypeError(f"'{type(value)}' is not a type that can be mapped to a json property")
     parentObject[newKey] = value
     writeJSONFile(filePath = filePath, data = rawData)
 
@@ -74,6 +76,8 @@ def addObject(filePath: Path, keys: set, newKey: str, object: dict):
     parentObject = _getValueOfKeys(rawData = rawData, keys = keys)
     if (_containsKey(object = parentObject, key = newKey)):
         raise JSONKeyAlreadyExists(doubleKey = newKey, allKeysOfObject = set(parentObject.keys()), foundKeys = keys)
+    elif(not _isJSONObject(rawData = object)):
+        raise TypeError(f"'{type(object)}' is not a type that can be mapped to a json property")
     parentObject[newKey] = object
     writeJSONFile(filePath = filePath, data = rawData)
 

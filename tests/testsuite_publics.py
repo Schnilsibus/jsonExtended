@@ -223,7 +223,7 @@ class TestSuite_containsProperty(SuperTestClass):
             self.fail(msg = "this should have raised a JSONDecodeError")
 
     def test_falseIfKeysEmpty(self):
-        self.assertFalse(expr = containsProperty(filePath = pathToValidJSON, keys = ()), msg = "containsProperty returned True for a emptyy key set")
+        self.assertFalse(expr = containsProperty(filePath = pathToValidJSON, keys = ()), msg = "containsProperty returned True for a empty key set")
 
     def test_falseIfPropertyDoesntExist(self):
         self.assertFalse(expr = containsProperty(filePath = pathToValidJSON, keys = invalidKeys), msg = "containsProperty returned True for a property that doesn't exist")
@@ -246,6 +246,37 @@ class TestSuite_getObject(SuperTestClass):
         except Exception as ex:
             self.fail(msg = "this should have raised a FileNotFoundError")
 
+    def test_raisesErrorIfInvalidJSONInFile(self):
+        try:
+            getObject(filePath = pathToInvalidJSON, keys = ())
+            self.fail(msg = "this should have raised a JSONDecodeError")
+        except JSONDecodeError as ex:
+            pass
+        except Exception as ex:
+            self.fail(msg = "this should have raised a JSONDecodeError")
+
+    @parameterized.expand(simpleTypeKeys)
+    def test_raisesErrorIfNotAObject(self, key: str):
+        try:
+            getObject(filePath = pathToValidJSON, keys = (key,))
+            self.fail(msg = "this should have raised a NotAObjectError")
+        except NotAObjectError as ex:
+            pass
+        except Exception as ex:
+            self.fail(msg = "this should have raised a NotAObjectError")
+
+    def test_raisesErrorIfAKeyDoesNotExist(self):
+        try:
+            getObject(filePath = pathToValidJSON, keys = invalidKeys)
+            self.fail(msg = "this should have raised a JSONKeyNotFoundError")
+        except JSONKeyNotFoundError as ex:
+            pass
+        except Exception as ex:
+            self.fail(msg = "this should have raised a JSONKeyNotFoundError")
+
+    def test_returnsJSONObjectCorrectly(self):
+        self.assertTrue(expr = validJSONData[objectKey] == getObject(filePath = pathToValidJSON, keys = (objectKey,)), msg = "getObject return wrong value")
+
 class TestSuite_setObject(SuperTestClass):
 
     def test_raisesErrorIfPathInvalid(self):
@@ -256,6 +287,44 @@ class TestSuite_setObject(SuperTestClass):
             pass
         except Exception as ex:
             self.fail(msg = "this should have raised a FileNotFoundError")
+
+    def test_raisesErrorIfInvalidJSONInFile(self):
+        try:
+            setObject(filePath = pathToInvalidJSON, keys = (), object = None)
+            self.fail(msg = "this should have raised a JSONDecodeError")
+        except JSONDecodeError as ex:
+            pass
+        except Exception as ex:
+            self.fail(msg = "this should have raised a JSONDecodeError")
+
+    @parameterized.expand(simpleTypeKeys)
+    def test_raisesErrorIfNotAObject(self, key: str):
+        try:
+            setObject(filePath = pathToValidJSON, keys = (key,), object = None)
+            self.fail(msg = "this should have raised a NotAObjectError")
+        except NotAObjectError as ex:
+            pass
+        except Exception as ex:
+            self.fail(msg = "this should have raised a NotAObjectError")
+
+    def test_raisesErrorIfAKeyDoesNotExist(self):
+        try:
+            setObject(filePath = pathToValidJSON, keys = invalidKeys, object = None)
+            self.fail(msg = "this should have raised a JSONKeyNotFoundError")
+        except JSONKeyNotFoundError as ex:
+            pass
+        except Exception as ex:
+            self.fail(msg = "this should have raised a JSONKeyNotFoundError")
+    
+    def test_writesJSONObjectCorrectly(self):
+        setObject(filePath = pathToValidJSON, keys = (objectKey,), object = nonEmptyDict)
+        with open(file = pathToValidJSON, mode = "r") as fp:
+            self.assertTrue(expr = nonEmptyDict == load(fp = fp)[objectKey], msg = "after calling setObject object is not written correctly to the file")
+
+    def test_writesEmptyJSONObjectCorrectly(self):
+        setObject(filePath = pathToValidJSON, keys = (objectKey,), object = emptyDict)
+        with open(file = pathToValidJSON, mode = "r") as fp:
+            self.assertTrue(expr = emptyDict == load(fp = fp)[objectKey], msg = "after calling setObject object is not written correctly to the file")
 
 class TestSuite_addObject(SuperTestClass):
 
@@ -268,6 +337,55 @@ class TestSuite_addObject(SuperTestClass):
         except Exception as ex:
             self.fail(msg = "this should have raised a FileNotFoundError")
 
+    def test_raisesErrorIfInvalidJSONInFile(self):
+        try:
+            addObject(filePath = pathToInvalidJSON, keys = (), newKey = "", object = None)
+            self.fail(msg = "this should have raised a JSONDecodeError")
+        except JSONDecodeError as ex:
+            pass
+        except Exception as ex:
+            self.fail(msg = "this should have raised a JSONDecodeError")
+
+    @parameterized.expand(mappedPythonTypes)
+    def test_raisesErrorIfNotAObject(self, object: any):
+        try:
+            addObject(filePath = pathToValidJSON, keys = (), newKey = "", object = object)
+            self.fail(msg = "this should have raised a TypeError")
+        except TypeError as ex:
+            pass
+        except Exception as ex:
+            self.fail(msg = "this should have raised a TypeError")
+
+    def test_raisesErrorIfAKeyDoesNotExist(self):
+        try:
+            addObject(filePath = pathToValidJSON, keys = invalidKeys, newKey = "", object = None)
+            self.fail(msg = "this should have raised a JSONKeyNotFoundError")
+        except JSONKeyNotFoundError as ex:
+            pass
+        except Exception as ex:
+            self.fail(msg = "this should have raised a JSONKeyNotFoundError")
+
+    def test_raisesErrorIfNewKeyAlreadyExists(self):
+        try:
+            addObject(filePath = pathToValidJSON, keys = (), newKey = objectKey, object = None)
+            self.fail(msg = "this should have raised a JSONKeyAlreadyExists")
+        except JSONKeyAlreadyExists as ex:
+            pass
+        except Exception as ex:
+            self.fail(msg = "this should have raised a JSONKeyAlreadyExists")
+
+    def test_writesJSONObjectCorrectly(self):
+        newKey = "newKey"
+        addObject(filePath = pathToValidJSON, keys = (), newKey = newKey, object = nonEmptyDict)
+        with open(file = pathToValidJSON, mode = "r") as fp:
+            self.assertTrue(expr = nonEmptyDict == load(fp = fp)[newKey], msg = "after calling addObject the property is not written correctly in the json file")
+
+    def test_writesEmptyJSONObjectCorrectly(self):
+        newKey = "newKey"
+        addObject(filePath = pathToValidJSON, keys = (), newKey = newKey, object = emptyDict)
+        with open(file = pathToValidJSON, mode = "r") as fp:
+            self.assertTrue(expr = emptyDict == load(fp = fp)[newKey], msg = "after calling addObject the property is not written correctly in the json file")
+
 class TestSuite_containsObject(SuperTestClass):
 
     def test_raisesErrorIfPathInvalid(self):
@@ -278,6 +396,28 @@ class TestSuite_containsObject(SuperTestClass):
             pass
         except Exception as ex:
             self.fail(msg = "this should have raised a FileNotFoundError")
+
+    def test_raisesErrorIfInvalidJSONInFile(self):
+        try:
+            containsProperty(filePath = pathToInvalidJSON, keys = ())
+            self.fail(msg = "this should have raised a JSONDecodeError")
+        except JSONDecodeError as ex:
+            pass
+        except Exception as ex:
+            self.fail(msg = "this should have raised a JSONDecodeError")
+
+    def test_trueIfKeysEmpty(self):
+        self.assertTrue(expr = containsObject(filePath = pathToValidJSON, keys = ()), msg = "containsObject returned False for a empty key set")
+
+    def test_falseIfObjectDoesntExist(self):
+        self.assertFalse(expr = containsObject(filePath = pathToValidJSON, keys = invalidKeys), msg = "containsObject returned True for a object that doesn't exist")
+
+    @parameterized.expand(simpleTypeKeys)
+    def test_falseIfKeysPointToProperty(self, key: str):
+        self.assertFalse(expr = containsObject(filePath = pathToValidJSON, keys = (key,)), msg = "key set points to json property, but containsObject returned True")
+
+    def test_trueIfObjectExists(self):
+        self.assertTrue(expr = containsObject(filePath = pathToValidJSON, keys = (objectKey,)), msg = f"containsObject says that object '{(objectKey,)}' doesn't exist but it does")
 
 if (__name__ == "__main__"):
     main()

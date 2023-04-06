@@ -37,15 +37,14 @@ nonTopLevelKeys = ("thisaobj", "second")
 nonTopLevelValue = validJSONData["thisaobj"]["second"]
 invalidKeys = ("thisaobj", "thisnothere")
 
-newSimpleObj = [
+newArray = [
      "newString",
      100,
      -45.78,
      False,
      None
 ]
-simpleTypeKeysWithNewValues = {simpleTypeKeys[i]: newSimpleObj[i] for i in range(len(simpleTypeKeys))}
-newArray = newSimpleObj
+simpleTypeKeysWithNewValues = {simpleTypeKeys[i]: newArray[i] for i in range(len(simpleTypeKeys))}
 
 validJSONStr = dumps(validJSONData)
 invalidJSONStr = validJSONStr[1:]

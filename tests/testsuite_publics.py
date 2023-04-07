@@ -4,7 +4,7 @@ from parameterized import parameterized
 from consts import *
 from json import load
 sys.path.append("D:\Desktop\jsonExtended")
-from _core.jsonx import *
+from _core.json_extended import *
 
 class SuperTestClass(TestCase):
 

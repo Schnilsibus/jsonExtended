@@ -2,7 +2,7 @@ import sys
 from pathlib import Path
 from json import dumps
 sys.path.append("D:\Desktop\jsonExtended")
-from _core.jsonx import _indentLevel
+from _core.json_extended import _indentLevel
 validJSONData = {
     "thisastr": "IamAString",
     "thisaint": 1234,

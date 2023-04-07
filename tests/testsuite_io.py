@@ -3,7 +3,7 @@ from unittest import main, TestCase
 from json import JSONDecodeError, load
 from consts import *
 sys.path.append("D:\Desktop\jsonExtended")
-from _core.json_extended import *
+from _core.extend_json import *
 
 class TestSuite_readJSONFile(TestCase):
 

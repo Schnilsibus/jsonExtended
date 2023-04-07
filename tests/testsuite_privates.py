@@ -3,7 +3,7 @@ from unittest import main, TestCase
 from parameterized import parameterized
 from consts import *
 sys.path.append("D:\Desktop\jsonExtended")
-from _core.json_extended import _containsKey, _getValueOfKeys, _isJSONObject, _isJSONProperty, JSONKeyNotFoundError
+from _core.extend_json import _containsKey, _getValueOfKeys, _isJSONObject, _isJSONProperty, JSONKeyNotFoundError
 
 class TestSuite__isJSONProperty(TestCase):
 

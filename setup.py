@@ -4,13 +4,14 @@ with open("README.md", "r") as fp:
     long_description = fp.read()
 
 setuptools.setup(
-    name = "json_extendend",
-    version = "0.0.2",
+    name = "extend-json",
+    version = "0.0.1",
     author = "Nils Urbach",
     author_email = "ndu01u@gmail.com",
     description = "additional methods for handling json files in python",
     long_description = long_description,
     long_description_content_type="text/markdown",
+    license = "MIT",
     keywords = [
         "json",
         "extended",

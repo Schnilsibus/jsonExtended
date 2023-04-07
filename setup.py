@@ -11,14 +11,26 @@ setuptools.setup(
     description = "additional methods for handling json files in python",
     long_description = long_description,
     keywords = [
-    
+        "json",
+        "extended",
     ],
     url = "https://github.com/Schnilsibus/jsonExtended.git",
     package_dir = {"": "_core"},
-    data_files = [
-    
-    ],
     classifiers = [
-    
+        "Development Status :: 2 - Pre-Alpha",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: MIT License",
+        "Natural Language :: English",
+        "Programming Language :: Python",
+        "Topic :: Text Processing",
+        "Topic :: Utilities",
+    ],
+    install_requires = [
+        "json",
+        "pathlib",
+    ],
+    test_suite = "tests",
+    tests_require = [
+        "sys",
     ]
 )   

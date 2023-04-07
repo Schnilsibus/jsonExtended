@@ -5,11 +5,12 @@ with open("README.md", "r") as fp:
 
 setuptools.setup(
     name = "json_extendend",
-    version = "0.0.0",
+    version = "0.0.2",
     author = "Nils Urbach",
     author_email = "ndu01u@gmail.com",
     description = "additional methods for handling json files in python",
     long_description = long_description,
+    long_description_content_type="text/markdown",
     keywords = [
         "json",
         "extended",
@@ -26,12 +27,5 @@ setuptools.setup(
         "Topic :: Text Processing",
         "Topic :: Utilities",
     ],
-    install_requires = [
-        "json",
-        "pathlib",
-    ],
     test_suite = "tests",
-    tests_require = [
-        "sys",
-    ]
 )   

@@ -114,7 +114,7 @@ def getProperty(filePath: Path, keys: tuple) -> any:
         raise NotAPropertyError(noPropertyObject = property)
     return property
 
-def setProperty(filePath: Path, keys: tuple, value: any):
+def setProperty(filePath: Path, keys: tuple, value: any) -> None:
     """
     Sets a property in a JSON file to a value
 
@@ -155,7 +155,7 @@ def setProperty(filePath: Path, keys: tuple, value: any):
     parentObject[keys[-1]] = value
     writeJSONFile(filePath = filePath, data = rawData)
 
-def addProperty(filePath: Path, keys: tuple, newKey: str, value: any):
+def addProperty(filePath: Path, keys: tuple, newKey: str, value: any) -> None:
     """
     adds a JSON property to a JSON file
 
@@ -164,11 +164,11 @@ def addProperty(filePath: Path, keys: tuple, newKey: str, value: any):
     filePath: pathlib.Path
         the path to the json file
     keys: tuple
-        the orderd! keys in the JSON file point to the JSON object that should contain the property
+        the orderd! keys in the JSON file point to the JSON object that should contain the new property
     newKey: str
-        the new key of the proerty
+        the new key of the property
     value: any (must be a python type that is mapped to JSON property)
-        the new value of the property
+        the value of the new property
 
     Returns
     -------
@@ -182,6 +182,8 @@ def addProperty(filePath: Path, keys: tuple, newKey: str, value: any):
         if the file that filePath points to cannot be decoded by the json package ergo dosn't contain valid JSON
     JSONKeyNotFoundError
         if keys contains a key that cannot be found (in the JSON object that the keys before the not-found-key point to)
+    NotAObjectError
+        if keys points to a JSON property instead of a JSON object (can't add a proeprty to a property) 
     NotAPropertyError
         if the type(value) is not mapped to a JSON property
     """
@@ -210,8 +212,8 @@ def containsProperty(filePath: Path, keys: tuple) -> bool:
     
     Returns
     -------
-    True if the JSON file contains the specified property
-    False else
+    - True if the JSON file contains the specified property
+    - False else
 
     Raises
     ------
@@ -230,17 +232,29 @@ def containsProperty(filePath: Path, keys: tuple) -> bool:
 
 def getObject(filePath: Path, keys: tuple) -> dict:
     """
-    Summary
+    Returns a object in a JSON file
 
     Parameters
     ----------
+    filePath: pathlib.Path
+        the path to the json file
+    keys: tuple
+        the orderd! keys in the JSON file that contain the desired object; the key of the object is the last element of the tuple
 
     Returns
     -------
+    the specified object
 
     Raises
     ------
-    
+    FileNotFoundError
+        if filePath doesn't point to a file
+    json.JSONDecodeError
+        if the file that filePath points to cannot be decoded by the json package ergo dosn't contain valid JSON
+    JSONKeyNotFoundError
+        if keys contains a key that cannot be found (in the JSON object that the keys before the not-found-key point to)
+    NotAObjectError
+        if keys point to a JSON property (not a JSON object)
     """
     
     rawData = readJSONFile(filePath = filePath)
@@ -249,19 +263,34 @@ def getObject(filePath: Path, keys: tuple) -> dict:
         raise NotAObjectError(noObject = object)
     return object
 
-def setObject(filePath: Path, keys: tuple, object: dict):
+def setObject(filePath: Path, keys: tuple, object: dict) -> None:
     """
-    Summary
+    Sets a object in a JSON file
 
     Parameters
     ----------
+    filePath: pathlib.Path
+        the path to the json file
+    keys: tuple
+        the orderd! keys in the JSON file that contain the desired object; the key of the object is the last element of the tuple
+    object: dict
+        the new value of the object
 
     Returns
     -------
+    None
 
     Raises
     ------
-    
+    FileNotFoundError
+        if filePath doesn't point to a file
+    json.JSONDecodeError
+        if the file that filePath points to cannot be decoded by the json package ergo dosn't contain valid JSON
+    JSONKeyNotFoundError
+        if keys contains a key that cannot be found (in the JSON object that the keys before the not-found-key point to)
+    NotAObjectError
+        - if keys point to a JSON property (not a JSON object)
+        - if not type(value) == dict 
     """
     
     rawData = readJSONFile(filePath = filePath)
@@ -275,19 +304,36 @@ def setObject(filePath: Path, keys: tuple, object: dict):
     parentObject[keys[-1]] = object
     writeJSONFile(filePath = filePath, data = rawData)
 
-def addObject(filePath: Path, keys: tuple, newKey: str, object: dict):
+def addObject(filePath: Path, keys: tuple, newKey: str, object: dict) -> None:
     """
-    Summary
+    adds a JSON object to a JSON file
 
     Parameters
     ----------
+    filePath: pathlib.Path
+        the path to the json file
+    keys: tuple
+        the orderd! keys in the JSON file point to the JSON object that should contain the new object
+    newKey: str
+        the new key of the object
+    value: dict
+        the value of the new object
 
     Returns
     -------
+    None
 
     Raises
     ------
-    
+    FileNotFoundError
+        if filePath doesn't point to a file
+    json.JSONDecodeError
+        if the file that filePath points to cannot be decoded by the json package ergo dosn't contain valid JSON
+    JSONKeyNotFoundError
+        if keys contains a key that cannot be found (in the JSON object that the keys before the not-found-key point to)
+    NotAObjectError
+        - if keys points to a JSONproperty instead of a JSON object (can't add a object to a property) 
+        - if the type(value) is not mapped to a JSON object
     """
     
     rawData = readJSONFile(filePath = filePath)
@@ -303,17 +349,26 @@ def addObject(filePath: Path, keys: tuple, newKey: str, object: dict):
 
 def containsObject(filePath: Path, keys: tuple) -> bool:
     """
-    Summary
+    Returns if a JSON file contains a specified object
 
     Parameters
     ----------
-
+    filePath: pathlib.Path
+        the path to the json file
+    keys: tuple
+        the orderd! keys in the JSON file that contain the desired object; the key of the object is the last element of the tuple
+    
     Returns
     -------
+    - True if the JSON file contains the specified object
+    - False else
 
     Raises
     ------
-    
+    FileNotFoundError
+        if filePath doesn't point to a file
+    json.JSONDecodeError
+        if the file that filePath points to cannot be decoded by the json package ergo dosn't contain valid JSON
     """
     
     rawData = readJSONFile(filePath = filePath)
@@ -325,17 +380,22 @@ def containsObject(filePath: Path, keys: tuple) -> bool:
 
 def isFormatCorrect(filePath: Path) -> bool:
     """
-    Summary
+    Returns if a file contains valid JSON
 
     Parameters
     ----------
+    filePath: pathlib.Path
+        the path to the file
 
     Returns
     -------
+    - True if the file contains valid JSON (== json.laod() doesn't throw a json.JSONDecodeError)
+    - False else
 
     Raises
     ------
-    
+    FileNotFoundError
+        if filePath doesn't point to a file
     """
     
     with open(file = filePath, mode = "r") as fp:
@@ -345,36 +405,49 @@ def isFormatCorrect(filePath: Path) -> bool:
             return False
         return True
     
-def indentJSONFile(filePath: Path):
-    """
-    Summary
+def indentJSONFile(filePath: Path) -> None:
+    f"""
+    Indents a JSON file
 
+    The file is indented using the json.dump() method with indent = {_indentLevel}
     Parameters
     ----------
-
+    filePath: pathlib.Path
+        the path to the json file
+    
     Returns
     -------
+    None
 
     Raises
     ------
-    
+    FileNotFoundError
+        if filePath doesn't point to a file
+    json.JSONDecodeError
+        if the file that filePath points to cannot be decoded by the json package ergo dosn't contain valid JSON
     """
     
     writeJSONFile(filePath = filePath, data = readJSONFile(filePath = filePath))
 
 def readJSONFile(filePath: Path) -> dict:
     """
-    Summary
+    Reads the contents of a JSON file and returns them as a dict
 
     Parameters
     ----------
+    filePath: pathlib.Path
+        the path to the json file
 
     Returns
     -------
+    The deserialized contents of a JSON file as a dict
 
     Raises
     ------
-    
+    FileNotFoundError
+        if filePath doesn't point to a file
+    json.JSONDecodeError
+        if the file that filePath points to cannot be decoded by the json package ergo dosn't contain valid JSON 
     """
     
     if (not filePath.exists()):
@@ -382,23 +455,32 @@ def readJSONFile(filePath: Path) -> dict:
     with filePath.open(mode = "r") as fp:
         return load(fp = fp)
     
-def writeJSONFile(filePath: Path, data: dict):
+def writeJSONFile(filePath: Path, data: dict) -> None:
     """
-    Summary
+    Writes a dict to a JSON file
 
     Parameters
     ----------
-
+    filePath: pathlib.Path
+        the path to the json file
+    data: dict
+        the data that should be written to the JSON file
     Returns
     -------
+    None
 
     Raises
     ------
-    
+    FileNotFoundError
+        if filePath doesn't point to a file
+    NotAObjectError
+        if not type(data) == dict 
     """
     
     if (not filePath.exists()):
         raise FileNotFoundError(f"the JSON file {filePath} doesn't exist")
+    elif (not _isJSONObject(rawData = data)):
+        raise NotAObjectError(noObject = data)
     with filePath.open(mode = "w") as fp:
         dump(obj = data, fp = fp, indent = _indentLevel)
 

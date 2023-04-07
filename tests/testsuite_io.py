@@ -55,11 +55,11 @@ class TestSuite_writeJSONFile(TestCase):
     def test_raisesErrorIfDataNotJSONSerializable(self):
         try:
             writeJSONFile(filePath = pathToValidJSON, data = invalidJSONData)
-            self.fail(msg = "this should have raised a TypeError")
-        except TypeError as ex:
+            self.fail(msg = "this should have raised a NotAObjectError")
+        except NotAObjectError as ex:
             pass
         except Exception as ex:
-            self.fail(msg = "this should have raised a TypeError")
+            self.fail(msg = "this should have raised a NotAObjectError")
 
     def test_writtenDataEqualToInputData(self):
         writeJSONFile(filePath = pathToValidJSON, data = validJSONData)

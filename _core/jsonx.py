@@ -1,3 +1,43 @@
+"""
+Help on module jsonx
+
+Name
+----
+    jsonx
+Description
+-----------
+    This module extends the json module.
+    Its core functionality is to get/set/add single JSON objects/Properties from a JSON file,
+    without manually alter a dict and call open() and json.load()/json.dump().
+    This chould for example be used for configurations files o.ä.
+
+Classes
+-------
+    no classes
+
+Functions
+-------
+    readJSONFile() - read the contents of a JSON file
+    writeJSONFile() - write a dict to a JSON file
+    isFormatCorrect() - check if a file contains valid JSON
+    indentJSONFile() - pretty indent a JSON file
+    getProperty() - get a specific property in a JSON file
+    setProperty() - set a specific property in a JSON file
+    addProperty() - add a specific property to a JSON file
+    containsProperty() - check if a a JSON file contains a specific property
+    getObject() - get a specific object in a JSON file
+    setObject() - set a specific object in a JSON file
+    addObject() - add a specific object to a JSON file
+    containsObject() - check if a a JSON file contains a specific object
+
+Exceptions
+----------
+    NotAPropertyError - raised if a python/JSON object is not a (or not mapped to) a JSON property
+    NotAObjectError - raised if a python/JSON object is not a (or not mapped to) a JSON object
+    JSONKeyNotFoundError - raised if a JSON key is not found a file
+    JSONKeyAlreadyExcistsError - raised if a JSON key already exists & it is tried to add it to a file
+"""
+
 from json import dump, load, JSONDecodeError
 from pathlib import Path
 
@@ -83,7 +123,7 @@ class JSONKeyAlreadyExists(Exception):
 
 def getProperty(filePath: Path, keys: tuple) -> any:
     """
-    Returns a property in a JSON file
+    Return a property in a JSON file
 
     Parameters
     ----------
@@ -116,7 +156,7 @@ def getProperty(filePath: Path, keys: tuple) -> any:
 
 def setProperty(filePath: Path, keys: tuple, value: any) -> None:
     """
-    Sets a property in a JSON file to a value
+    Set a property in a JSON file to a value
 
     Parameters
     ----------
@@ -157,7 +197,7 @@ def setProperty(filePath: Path, keys: tuple, value: any) -> None:
 
 def addProperty(filePath: Path, keys: tuple, newKey: str, value: any) -> None:
     """
-    adds a JSON property to a JSON file
+    Add a JSON property to a JSON file
 
     Parameters
     ----------
@@ -201,7 +241,7 @@ def addProperty(filePath: Path, keys: tuple, newKey: str, value: any) -> None:
 
 def containsProperty(filePath: Path, keys: tuple) -> bool:
     """
-    Returns if a JSON file contains a specified porperty
+    Check if a JSON file contains a specified porperty
 
     Parameters
     ----------
@@ -232,7 +272,7 @@ def containsProperty(filePath: Path, keys: tuple) -> bool:
 
 def getObject(filePath: Path, keys: tuple) -> dict:
     """
-    Returns a object in a JSON file
+    Return a object in a JSON file
 
     Parameters
     ----------
@@ -265,7 +305,7 @@ def getObject(filePath: Path, keys: tuple) -> dict:
 
 def setObject(filePath: Path, keys: tuple, object: dict) -> None:
     """
-    Sets a object in a JSON file
+    Set a object in a JSON file
 
     Parameters
     ----------
@@ -306,7 +346,7 @@ def setObject(filePath: Path, keys: tuple, object: dict) -> None:
 
 def addObject(filePath: Path, keys: tuple, newKey: str, object: dict) -> None:
     """
-    adds a JSON object to a JSON file
+    Add a JSON object to a JSON file
 
     Parameters
     ----------
@@ -349,7 +389,7 @@ def addObject(filePath: Path, keys: tuple, newKey: str, object: dict) -> None:
 
 def containsObject(filePath: Path, keys: tuple) -> bool:
     """
-    Returns if a JSON file contains a specified object
+    Check if a JSON file contains a specified object
 
     Parameters
     ----------
@@ -380,7 +420,7 @@ def containsObject(filePath: Path, keys: tuple) -> bool:
 
 def isFormatCorrect(filePath: Path) -> bool:
     """
-    Returns if a file contains valid JSON
+    Check if a file contains valid JSON
 
     Parameters
     ----------
@@ -407,7 +447,7 @@ def isFormatCorrect(filePath: Path) -> bool:
     
 def indentJSONFile(filePath: Path) -> None:
     f"""
-    Indents a JSON file
+    Indent a JSON file
 
     The file is indented using the json.dump() method with indent = {_indentLevel}
     Parameters
@@ -431,7 +471,7 @@ def indentJSONFile(filePath: Path) -> None:
 
 def readJSONFile(filePath: Path) -> dict:
     """
-    Reads the contents of a JSON file and returns them as a dict
+    Read the contents of a JSON file and returns them as a dict
 
     Parameters
     ----------
@@ -457,7 +497,7 @@ def readJSONFile(filePath: Path) -> dict:
     
 def writeJSONFile(filePath: Path, data: dict) -> None:
     """
-    Writes a dict to a JSON file
+    Write a dict to a JSON file
 
     Parameters
     ----------

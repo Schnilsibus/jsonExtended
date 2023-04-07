@@ -10,8 +10,14 @@ setuptools.setup(
     author_email = "ndu01u@gmail.com",
     description = "additional methods for handling json files in python",
     long_description = long_description,
+    keywords = [
+    
+    ],
     url = "https://github.com/Schnilsibus/jsonExtended.git",
     package_dir = {"": "_core"},
+    data_files = [
+    
+    ],
     classifiers = [
     
     ]

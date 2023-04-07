@@ -17,9 +17,10 @@ setuptools.setup(
     url = "https://github.com/Schnilsibus/jsonExtended.git",
     package_dir = {"": "_core"},
     classifiers = [
-        "Development Status :: 2 - Pre-Alpha",
+        "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
         "Natural Language :: English",
         "Programming Language :: Python",
         "Topic :: Text Processing",

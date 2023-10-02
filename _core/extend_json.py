@@ -9,7 +9,7 @@ Description
     This module extends the json module.
     Its core functionality is to get/set/add single JSON objects/Properties from a JSON file,
     without manually alter a dict and call open() and json.load()/json.dump().
-    This chould for example be used for configurations files o.ä.
+    This could for example be used for configurations files o.ä.
 
 Classes
 -------
@@ -24,24 +24,25 @@ Functions
     getProperty() - get a specific property in a JSON file
     setProperty() - set a specific property in a JSON file
     addProperty() - add a specific property to a JSON file
-    containsProperty() - check if a a JSON file contains a specific property
+    containsProperty() - check if a JSON file contains a specific property
     getObject() - get a specific object in a JSON file
     setObject() - set a specific object in a JSON file
     addObject() - add a specific object to a JSON file
-    containsObject() - check if a a JSON file contains a specific object
+    containsObject() - check if a JSON file contains a specific object
 
 Exceptions
 ----------
     NotAPropertyError - raised if a python/JSON object is not a (or not mapped to) a JSON property
     NotAObjectError - raised if a python/JSON object is not a (or not mapped to) a JSON object
     JSONKeyNotFoundError - raised if a JSON key is not found a file
-    JSONKeyAlreadyExcistsError - raised if a JSON key already exists & it is tried to add it to a file
+    JSONKeyAlreadyExistsError - raised if a JSON key already exists & it is tried to add it to a file
 """
 
 from json import dump, load, JSONDecodeError
 from pathlib import Path
 
 _indentLevel = 4
+
 
 class NotAPropertyError(Exception):
     """
@@ -63,6 +64,7 @@ class NotAPropertyError(Exception):
 
         Exception.__init__(self, f"the json object {noPropertyObject} is not a property; properties are: json data types and json arrays")
 
+
 class NotAObjectError(Exception):
     """
     An Error that is be raised if a python object has a type that is not mapped to a JSON object
@@ -83,6 +85,7 @@ class NotAObjectError(Exception):
 
         Exception.__init__(self, f"the json value {noObject} is not a json object")
 
+
 class JSONKeyNotFoundError(Exception):
     """
     An Error that is be raised if a key is not found in a JSON file
@@ -102,6 +105,7 @@ class JSONKeyNotFoundError(Exception):
         
         Exception.__init__(self, f"key '{wrongKey}' not in {allKeysOfObject}; found keys: [{'->'.join(foundKeys)}]")
 
+
 class JSONKeyAlreadyExists(Exception):
     """
     An Error that is be raised if a key already exists in a JSON object
@@ -120,6 +124,7 @@ class JSONKeyAlreadyExists(Exception):
         """
         
         Exception.__init__(self, f"key '{doubleKey}' already exists in {allKeysOfObject}; found keys: [{'->'.join(foundKeys)}]")
+
 
 def getProperty(filePath: Path, keys: tuple) -> any:
     """
@@ -153,6 +158,7 @@ def getProperty(filePath: Path, keys: tuple) -> any:
     if (_isJSONObject(rawData = property)):
         raise NotAPropertyError(noPropertyObject = property)
     return property
+
 
 def setProperty(filePath: Path, keys: tuple, value: any) -> None:
     """
@@ -194,6 +200,7 @@ def setProperty(filePath: Path, keys: tuple, value: any) -> None:
         raise NotAPropertyError(noPropertyObject = value)
     parentObject[keys[-1]] = value
     writeJSONFile(filePath = filePath, data = rawData)
+
 
 def addProperty(filePath: Path, keys: tuple, newKey: str, value: any) -> None:
     """
@@ -239,6 +246,7 @@ def addProperty(filePath: Path, keys: tuple, newKey: str, value: any) -> None:
     parentObject[newKey] = value
     writeJSONFile(filePath = filePath, data = rawData)
 
+
 def containsProperty(filePath: Path, keys: tuple) -> bool:
     """
     Check if a JSON file contains a specified porperty
@@ -269,6 +277,7 @@ def containsProperty(filePath: Path, keys: tuple) -> bool:
         return _isJSONProperty(rawData = value)
     except JSONKeyNotFoundError as ex:
         return False
+
 
 def getObject(filePath: Path, keys: tuple) -> dict:
     """
@@ -302,6 +311,7 @@ def getObject(filePath: Path, keys: tuple) -> dict:
     if (_isJSONProperty(rawData = object)):
         raise NotAObjectError(noObject = object)
     return object
+
 
 def setObject(filePath: Path, keys: tuple, object: dict) -> None:
     """
@@ -344,6 +354,7 @@ def setObject(filePath: Path, keys: tuple, object: dict) -> None:
     parentObject[keys[-1]] = object
     writeJSONFile(filePath = filePath, data = rawData)
 
+
 def addObject(filePath: Path, keys: tuple, newKey: str, object: dict) -> None:
     """
     Add a JSON object to a JSON file
@@ -356,8 +367,8 @@ def addObject(filePath: Path, keys: tuple, newKey: str, object: dict) -> None:
         the orderd! keys in the JSON file point to the JSON object that should contain the new object
     newKey: str
         the new key of the object
-    value: dict
-        the value of the new object
+    object: dict
+        the new object
 
     Returns
     -------
@@ -386,6 +397,7 @@ def addObject(filePath: Path, keys: tuple, newKey: str, object: dict) -> None:
         raise NotAObjectError(noObject = object)
     parentObject[newKey] = object
     writeJSONFile(filePath = filePath, data = rawData)
+
 
 def containsObject(filePath: Path, keys: tuple) -> bool:
     """
@@ -418,6 +430,7 @@ def containsObject(filePath: Path, keys: tuple) -> bool:
     except JSONKeyNotFoundError as ex:
         return False
 
+
 def isFormatCorrect(filePath: Path) -> bool:
     """
     Check if a file contains valid JSON
@@ -444,7 +457,8 @@ def isFormatCorrect(filePath: Path) -> bool:
         except JSONDecodeError:
             return False
         return True
-    
+
+
 def indentJSONFile(filePath: Path) -> None:
     f"""
     Indent a JSON file
@@ -468,6 +482,7 @@ def indentJSONFile(filePath: Path) -> None:
     """
     
     writeJSONFile(filePath = filePath, data = readJSONFile(filePath = filePath))
+
 
 def readJSONFile(filePath: Path) -> dict:
     """
@@ -494,7 +509,8 @@ def readJSONFile(filePath: Path) -> dict:
         raise FileNotFoundError(f"the JSON file {filePath} doesn't exist")
     with filePath.open(mode = "r") as fp:
         return load(fp = fp)
-    
+
+
 def writeJSONFile(filePath: Path, data: dict) -> None:
     """
     Write a dict to a JSON file
@@ -524,6 +540,7 @@ def writeJSONFile(filePath: Path, data: dict) -> None:
     with filePath.open(mode = "w") as fp:
         dump(obj = data, fp = fp, indent = _indentLevel)
 
+
 def _getValueOfKeys(rawData: dict, keys: tuple) -> any:
     currentObject = rawData
     for i in range(len(keys)):
@@ -532,11 +549,14 @@ def _getValueOfKeys(rawData: dict, keys: tuple) -> any:
         currentObject = currentObject[keys[i]]
     return currentObject
 
+
 def _isJSONProperty(rawData: any) -> bool:
     return type(rawData) in [type(None), float, int, list, bool, str]
 
+
 def _isJSONObject(rawData: any) -> bool:
     return type(rawData) == dict
+
 
 def _containsKey(object: dict, key: str) -> bool:
     return key in object.keys()

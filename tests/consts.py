@@ -2,7 +2,7 @@ import sys
 from pathlib import Path
 from json import dumps
 sys.path.append("D:\Desktop\jsonExtended")
-from _core.extend_json import _indentLevel
+from _core.json_extended import _indent_level
 validJSONData = {
     "thisastr": "IamAString",
     "thisaint": 1234,
@@ -48,7 +48,7 @@ simpleTypeKeysWithNewValues = {simpleTypeKeys[i]: newArray[i] for i in range(len
 
 validJSONStr = dumps(validJSONData)
 invalidJSONStr = validJSONStr[1:]
-indentedValidJSONStr = dumps(validJSONData, indent = _indentLevel)
+indentedValidJSONStr = dumps(validJSONData, indent = _indent_level)
 
 pathToValidJSON = Path.cwd() / Path(r"tests\validJSONfile.json")
 pathToInvalidJSON = Path.cwd() / Path(r"tests\invlaidJSONfile.json")

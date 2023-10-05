@@ -50,9 +50,11 @@ validJSONStr = dumps(validJSONData)
 invalidJSONStr = validJSONStr[1:]
 indentedValidJSONStr = dumps(validJSONData, indent=indent_level)
 
-pathToValidJSON = Path.cwd() / Path(r"tests\valid_json_file.json")
-pathToInvalidJSON = Path.cwd() / Path(r"tests\invalid_json_file.json")
-pathToNoJSON = Path.cwd() / Path(r"tests\dont_exist.json")
+
+this_dir = Path(__file__).parent
+pathToValidJSON = this_dir / Path("valid_json_file.json")
+pathToInvalidJSON = this_dir / Path("invalid_json_file.json")
+pathToNoJSON = this_dir / Path("dont_exist.json")
 
 mappedPythonTypes = [
     "string",

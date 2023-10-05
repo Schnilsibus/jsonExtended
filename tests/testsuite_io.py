@@ -1,70 +1,70 @@
-import sys
 from unittest import main, TestCase
-from json import JSONDecodeError, load
 from consts import *
-sys.path.append("D:\Desktop\jsonExtended")
 from _core.json_extended import *
 
-class TestSuite_readJSONFile(TestCase):
+
+class TestSuiteReadJSONFile(TestCase):
 
     def setUp(self):
-        globalSetUp(write = True)
+        globalSetUp(write=True)
 
     def tearDown(self):
         globalTearDown()
 
     def test_raisesErrorIfPathInvalid(self):
         try:
-            read_json_file(file_path= pathToNoJSON)
+            read_json_file(file_path=pathToNoJSON)
             self.fail("this should have raised a FileNotFoundError")
-        except FileNotFoundError as ex:
+        except FileNotFoundError:
             pass
-        except Exception as ex:
+        except Exception:
             self.fail("this should have raised a FileNotFoundError")
 
     def test_raisesErrorIfJSONFileInvalid(self):
         try:
-            read_json_file(file_path= pathToInvalidJSON)
-            self.fail(msg = "this should have raised a JSONDecodeError")
-        except JSONDecodeError as ex:
+            read_json_file(file_path=pathToInvalidJSON)
+            self.fail(msg="this should have raised a JSONDecodeError")
+        except JSONDecodeError:
             pass
-        except Exception as ex:
-            self.fail(msg = "this should have raised a JSONDecodeError")
+        except Exception:
+            self.fail(msg="this should have raised a JSONDecodeError")
 
     def test_readDataEqualToFileContents(self):
-        readData = read_json_file(file_path= pathToValidJSON)
-        self.assertTrue(expr = readData == validJSONData, msg = "read and decoded file contents are not correct")
+        readData = read_json_file(file_path=pathToValidJSON)
+        self.assertTrue(expr=readData == validJSONData, msg="read and decoded file contents are not correct")
 
-class TestSuite_writeJSONFile(TestCase):
-    
+
+class TestSuiteWriteJSONFile(TestCase):
+
     def setUp(self):
-        globalSetUp(write = False)
+        globalSetUp(write=False)
 
     def tearDown(self):
         globalTearDown()
-    
+
     def test_raisesErrorIfPathInvalid(self):
         try:
-            write_json_file(file_path= pathToNoJSON, data = validJSONData)
-            self.fail(msg = "this should have raised a FileNotFoundError")
-        except FileNotFoundError as ex:
+            write_json_file(file_path=pathToNoJSON, data=validJSONData)
+            self.fail(msg="this should have raised a FileNotFoundError")
+        except FileNotFoundError:
             pass
-        except Exception as ex:
-            self.fail(msg = "this should have raised a FileNotFoundError")
+        except Exception:
+            self.fail(msg="this should have raised a FileNotFoundError")
 
     def test_raisesErrorIfDataNotJSONSerializable(self):
         try:
-            write_json_file(file_path= pathToValidJSON, data = invalidJSONData)
-            self.fail(msg = "this should have raised a NotAObjectError")
-        except NotAObjectError as ex:
+            write_json_file(file_path=pathToValidJSON, data=invalidJSONData)
+            self.fail(msg="this should have raised a NotAObjectError")
+        except NotAObjectError:
             pass
-        except Exception as ex:
-            self.fail(msg = "this should have raised a NotAObjectError")
+        except Exception:
+            self.fail(msg="this should have raised a NotAObjectError")
 
     def test_writtenDataEqualToInputData(self):
-        write_json_file(file_path= pathToValidJSON, data = validJSONData)
-        with open(file = pathToValidJSON, mode = "r") as fp:
-            self.assertTrue(expr = validJSONData == load(fp = fp), msg = "written and encoded file contents are not correct")
+        write_json_file(file_path=pathToValidJSON, data=validJSONData)
+        with open(file=pathToValidJSON, mode="r") as fp:
+            self.assertTrue(expr=validJSONData == load(fp=fp), msg="written and encoded file contents are not correct")
 
-if (__name__ == "__main__"):
+
+if __name__ == "__main__":
     main()

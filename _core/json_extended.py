@@ -40,8 +40,12 @@ Exceptions
 
 from json import dump, load, JSONDecodeError
 from pathlib import Path
+from typing import Any, Union, Tuple
 
 _indent_level = 4
+
+Property = Union[None, bool, int, float, str, list]
+Object = dict
 
 
 class NotAPropertyError(Exception):
@@ -50,15 +54,15 @@ class NotAPropertyError(Exception):
 
     Can also be raised if contents of a json file should be a json property but are a json object.
     json types that are called properties are: array, string, number, boolean, null.
-    The python types that are mapped to those are: tuple, str, int, float, bool, None.
+    The python types that are mapped to those are: list, str, int, float, bool, None.
     Every other python type is not considered a json property.
     """
 
-    def __init__(self, no_property_object: any):
+    def __init__(self, no_property_object: Any):
         """
         Parameters
         ----------
-        no_property_object: any
+        no_property_object: Any
             the python object whose type is not mapped to a json property
         """
 
@@ -78,11 +82,11 @@ class NotAObjectError(Exception):
     Every other python type is not considered a json object.
     """
 
-    def __init__(self, no_object: any):
+    def __init__(self, no_object: Any):
         """
         Parameters
         ----------
-        no_object: any
+        no_object: Any
             the python object whose type is not mapped to a json object
         """
 
@@ -94,15 +98,15 @@ class JSONKeyNotFoundError(Exception):
     An Error that is raised if a key is not found in a json file
     """
 
-    def __init__(self, wrong_key: str, all_keys_of_object: tuple, found_keys: tuple = None):
+    def __init__(self, wrong_key: str, all_keys_of_object: Tuple, found_keys: Tuple = None):
         """
         Parameters
         ----------
         wrong_key: str
             the key that could not be found
-        all_keys_of_object: tuple
+        all_keys_of_object: Tuple
             all the keys of the object in which the wrong key could not be found
-        found_keys: tuple (default=None)
+        found_keys: Tuple (default=None)
             all the keys of the parent json objects of the object in which the wrong key could not be found
         """
 
@@ -115,15 +119,15 @@ class JSONKeyAlreadyExists(Exception):
     An Error that is raised if a key already exists in a json object
     """
 
-    def __init__(self, double_key: str, all_keys_of_object: tuple, found_keys: tuple = None):
+    def __init__(self, double_key: str, all_keys_of_object: Tuple, found_keys: Tuple = None):
         """
         Parameters
         ----------
         double_key: str
             the key that already exists
-        all_keys_of_object: tuple
+        all_keys_of_object: Tuple
             all the keys of the object that already contains the doubled key
-        found_keys: tuple
+        found_keys: Tuple
             all the keys of the parent json objects of the object that contains the doubled key
         """
 
@@ -133,7 +137,7 @@ class JSONKeyAlreadyExists(Exception):
         )
 
 
-def get_property(file_path: Path, keys: tuple) -> any:
+def get_property(file_path: Path, keys: Tuple) -> Property:
     """
     Return a property in a json file
 
@@ -141,7 +145,7 @@ def get_property(file_path: Path, keys: tuple) -> any:
     ----------
     file_path: pathlib.Path
         the path to the json file
-    keys: tuple
+    keys: Tuple
         the ordered! keys in the json file that contain the desired property;
         the key of the property is the last element of the tuple
 
@@ -168,7 +172,7 @@ def get_property(file_path: Path, keys: tuple) -> any:
     return value
 
 
-def set_property(file_path: Path, keys: tuple, value: any) -> None:
+def set_property(file_path: Path, keys: Tuple, value: Property) -> None:
     """
     Set a property in a json file to a value
 
@@ -176,10 +180,10 @@ def set_property(file_path: Path, keys: tuple, value: any) -> None:
     ----------
     file_path: pathlib.Path
         the path to the json file
-    keys: tuple
+    keys: Tuple
         the ordered! keys in the json file that contain the desired property;
         the key of the property is the last element of the tuple
-    value: any (must be a python type that is mapped to json property)
+    value: Property (must be a python type that is mapped to json property)
         the new value of the property
 
     Returns
@@ -212,7 +216,7 @@ def set_property(file_path: Path, keys: tuple, value: any) -> None:
     write_json_file(file_path=file_path, data=raw_data)
 
 
-def add_property(file_path: Path, keys: tuple, new_key: str, value: any) -> None:
+def add_property(file_path: Path, keys: Tuple, new_key: str, value: Property) -> None:
     """
     Add a json property to a json file
 
@@ -220,11 +224,11 @@ def add_property(file_path: Path, keys: tuple, new_key: str, value: any) -> None
     ----------
     file_path: pathlib.Path
         the path to the json file
-    keys: tuple
+    keys: Tuple
         the ordered! keys in the json file point to the json object that should contain the new property
     new_key: str
         the new key of the property
-    value: any (must be a python type that is mapped to json property)
+    value: Property (must be a python type that is mapped to json property)
         the value of the new property
 
     Returns
@@ -257,7 +261,7 @@ def add_property(file_path: Path, keys: tuple, new_key: str, value: any) -> None
     write_json_file(file_path=file_path, data=raw_data)
 
 
-def contains_property(file_path: Path, keys: tuple) -> bool:
+def contains_property(file_path: Path, keys: Tuple) -> bool:
     """
     Check if a json file contains a specified property
 
@@ -265,7 +269,7 @@ def contains_property(file_path: Path, keys: tuple) -> bool:
     ----------
     file_path: pathlib.Path
         the path to the json file
-    keys: tuple
+    keys: Tuple
         the ordered! keys in the json file that contain the desired property;
         the key of the property is the last element of the tuple
     
@@ -290,7 +294,7 @@ def contains_property(file_path: Path, keys: tuple) -> bool:
         return False
 
 
-def get_object(file_path: Path, keys: tuple) -> dict:
+def get_object(file_path: Path, keys: Tuple) -> Object:
     """
     Return an object in a json file
 
@@ -298,7 +302,7 @@ def get_object(file_path: Path, keys: tuple) -> dict:
     ----------
     file_path: pathlib.Path
         the path to the json file
-    keys: tuple
+    keys: Tuple
         the ordered! keys in the json file that contain the desired object;
         the key of the object is the last element of the tuple
 
@@ -325,7 +329,7 @@ def get_object(file_path: Path, keys: tuple) -> dict:
     return json_object
 
 
-def setObject(file_path: Path, keys: tuple, new_object: dict) -> None:
+def setObject(file_path: Path, keys: Tuple, new_object: Object) -> None:
     """
     Set an object in a json file
 
@@ -333,7 +337,7 @@ def setObject(file_path: Path, keys: tuple, new_object: dict) -> None:
     ----------
     file_path: pathlib.Path
         the path to the json file
-    keys: tuple
+    keys: Tuple
         the ordered! keys in the json file that contain the desired object;
         the key of the object is the last element of the tuple
     new_object: dict
@@ -369,7 +373,7 @@ def setObject(file_path: Path, keys: tuple, new_object: dict) -> None:
     write_json_file(file_path=file_path, data=rawData)
 
 
-def add_object(file_path: Path, keys: tuple, new_key: str, new_object: dict) -> None:
+def add_object(file_path: Path, keys: Tuple, new_key: str, new_object: Object) -> None:
     """
     Add a json object to a json file
 
@@ -377,7 +381,7 @@ def add_object(file_path: Path, keys: tuple, new_key: str, new_object: dict) -> 
     ----------
     file_path: pathlib.Path
         the path to the json file
-    keys: tuple
+    keys: Tuple
         the ordered! keys in the json file point to the json object that should contain the new object
     new_key: str
         the new key of the object
@@ -413,7 +417,7 @@ def add_object(file_path: Path, keys: tuple, new_key: str, new_object: dict) -> 
     write_json_file(file_path=file_path, data=rawData)
 
 
-def contains_object(file_path: Path, keys: tuple) -> bool:
+def contains_object(file_path: Path, keys: Tuple) -> bool:
     """
     Check if a json file contains a specified object
 
@@ -421,7 +425,7 @@ def contains_object(file_path: Path, keys: tuple) -> bool:
     ----------
     file_path: pathlib.Path
         the path to the json file
-    keys: tuple
+    keys: Tuple
         the ordered! keys in the json file that contain the desired object;
         the key of the object is the last element of the tuple
     
@@ -498,7 +502,7 @@ def indent_json_file(file_path: Path) -> None:
     write_json_file(file_path=file_path, data=read_json_file(file_path=file_path))
 
 
-def read_json_file(file_path: Path) -> dict:
+def read_json_file(file_path: Path) -> Object:
     """
     Read the contents of a json file and returns them as a dict
 
@@ -525,7 +529,7 @@ def read_json_file(file_path: Path) -> dict:
         return load(fp=fp)
 
 
-def write_json_file(file_path: Path, data: dict) -> None:
+def write_json_file(file_path: Path, data: Object) -> None:
     """
     Write a dict to a json file
 
@@ -555,7 +559,7 @@ def write_json_file(file_path: Path, data: dict) -> None:
         dump(obj=data, fp=fp, indent=_indent_level)
 
 
-def _get_value_of_keys(raw_data: dict, keys: tuple) -> any:
+def _get_value_of_keys(raw_data: dict, keys: Tuple) -> Union[Object, Property]:
     current_object = raw_data
     for i in range(len(keys)):
         if not _contains_key(raw_data=current_object, key=keys[i]):
@@ -566,13 +570,13 @@ def _get_value_of_keys(raw_data: dict, keys: tuple) -> any:
     return current_object
 
 
-def _is_json_property(raw_data: any) -> bool:
+def _is_json_property(raw_data: Any) -> bool:
     return type(raw_data) in [type(None), float, int, list, bool, str]
 
 
-def _is_json_object(raw_data: any) -> bool:
+def _is_json_object(raw_data: Any) -> bool:
     return type(raw_data) == dict
 
 
-def _contains_key(raw_data: dict, key: str) -> bool:
+def _contains_key(raw_data: Object, key: str) -> bool:
     return key in raw_data.keys()

@@ -17,7 +17,7 @@ setuptools.setup(
         "extended",
         "convenience"
     ],
-    url="https://github.com/Schnilsibus/jsonExtended.git",
+    url="https://github.com/Schnilsibus/json_convenience.git",
     package_dir={"": "_core"},
     classifiers=[
         "Development Status :: 3 - Alpha",

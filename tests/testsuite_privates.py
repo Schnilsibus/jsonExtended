@@ -1,7 +1,7 @@
 from unittest import main, TestCase
 from parameterized import parameterized
 from consts import *
-import _core.json_extended as jsonx
+import _core.json_convenience as jsonx
 
 
 class TestSuiteIsJSONProperty(TestCase):

@@ -1,6 +1,6 @@
 from unittest import main, TestCase
 from consts import *
-from _core.json_extended import *
+from _core.json_convenience import *
 
 
 class TestSuiteReadJSONFile(TestCase):

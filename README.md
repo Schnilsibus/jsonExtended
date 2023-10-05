@@ -1,12 +1,12 @@
-# json_extended
+# json-convenience
 Additional methods for handling json files in python.
 
 ## Requirements
-None so far
+None
 
 ## Install
-install using pip : ```python -m pip install extend-json```
+install using pip : ```python -m pip install json-convenience```
 
 ## Usage
-- import: ```import extend_json``` or ```from extend_json import ...```  
-- overview: start python console and run  ```help(extend_json)```
+- import: ```import json_convenience``` or ```from json_convenience import ...```  
+- overview: start python console and run  ```help(json_convenience)```

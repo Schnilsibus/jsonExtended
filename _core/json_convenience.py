@@ -1,9 +1,7 @@
 """
-Help on module json_extended
-
 Name
 ----
-    json_extended
+    json-convenience
 Description
 -----------
     This module extends the json module.

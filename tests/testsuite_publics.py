@@ -1,7 +1,7 @@
 from unittest import main, TestCase
 from parameterized import parameterized
 from consts import *
-from _core.json_extended import *
+from _core.json_convenience import *
 
 
 class SuperTestClass(TestCase):
